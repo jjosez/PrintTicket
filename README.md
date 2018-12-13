@@ -1,1 +1,2 @@
-"# PrintTicket" 
+# PrintTicket
+PrintTicket plugin for Facturascript 
