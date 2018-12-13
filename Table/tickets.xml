@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<table>
+    <column>
+        <name>coddocument</name>
+        <type>character varying(8)</type>
+        <null>NO</null>
+    </column>
+    <column>
+        <name>text</name>
+        <type>text</type>
+        <null>NO</null>
+    </column>
+    <constraint>
+        <name>tickets_pkey</name>
+        <type>PRIMARY KEY (coddocument)</type>
+    </constraint>
+</table>
