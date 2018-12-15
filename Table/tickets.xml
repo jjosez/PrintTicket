@@ -2,7 +2,7 @@
 <table>
     <column>
         <name>coddocument</name>
-        <type>character varying(8)</type>
+        <type>character varying(30)</type>
         <null>NO</null>
     </column>
     <column>

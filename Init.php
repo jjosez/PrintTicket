@@ -21,7 +21,7 @@ class Init extends InitClass
         EventManager::attach('Model:AlbaranCliente:save', function($albaran) {
 		    /// su código aquí
 		    /// $model contiene el artículo que se ha eliminado
-            $this->buildTicket($albaran, 'albaran');		    
+            $this->buildTicket($albaran, 'AlbaranCliente');		    
 		});
     }
 
@@ -39,13 +39,13 @@ class Init extends InitClass
 
     private function buildTicket($document, $type)
     {
-        $log = new MiniLog();
-        $logMsg = sprintf("Imprimiendo %s <img src='http://localhost:10080?documento=%s alt='remote-printer'/>", $type, $type); 
-		$log->notice($logMsg);
+        //$log = new MiniLog();
+        //$logMsg = sprintf("Imprimiendo %s <img src='http://localhost:10080?documento=%s alt='remote-printer'/>", $type, $type); 
+		//$log->notice($logMsg);
 
         $width = AppSettings::get('ticket', 'linelength');
         switch ($type) {
-            case 'albaran':
+            case 'AlbaranCliente':
                 $builder = new TicketBuilder\TicketBuilderAlbaran($width);
                 break;
 

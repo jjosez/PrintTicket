@@ -1,7 +1,11 @@
 {% extends 'Master/MenuTemplate.html.twig' %}
 
 {% block body %}
-    <h1>Configuraci&oacute;n del ticket</h1>
+    <div class="container-fluid">
+    <h1 class="h3 d-none d-md-inline-block">
+        Configuraci&oacute;n del ticket
+        <i class="fas fa-print fa-sm" aria-hidden="true"></i>        
+    </h1> 
     <div class="row">
         <div class="col-12">
             <form id="formEditAlbaranCliente" method="post" enctype="multipart/form-data">
@@ -62,5 +66,6 @@
             </div>
             </form>
         </div>
+    </div>
     </div>
 {% endblock %}
