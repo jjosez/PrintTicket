@@ -1,14 +1,9 @@
-{% extends "@Core/Master/MicroTemplate.html.twig" %}
-
-{% block body %}
-	{{ parent() }}
-	<div class="row">
-      <div class="col-12 text-center">
-         <h1><i class="fas fa-print" aria-hidden="true"></i></h1>
-         <h3><p>Imprimiendo {{ fsc.documentType }}</p></h3>
-      </div>      
-   	</div>	
-	<div class="d-none">
-		<img src='http://localhost:10080?documento={{ fsc.documentType }}' alt='remote-printer'/>
-	</div>
-{% endblock %}
+<div class="row">
+    <div class="col-12 text-center">
+       <h1><i class="fas fa-print" aria-hidden="true"></i></h1>
+       <h4><p>Imprimiendo {{ fsc.documentType }}</p></h4>
+    </div>      
+</div>	
+<div class="d-none">
+	<img src='http://localhost:10080?documento={{ fsc.documentType }}' alt='remote-printer'/>
+</div>

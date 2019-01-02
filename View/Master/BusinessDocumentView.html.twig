@@ -5,39 +5,30 @@
 <div class="row pt-3">
 	<div class="col-12 text-center">
 		<!-- Button trigger modal -->
-		<button type="button" class="btn btn-primary" data-remote="/PrintTicketSettings?documento={{ firstView.model.modelClassName() }}" data-toggle="modal" data-target="#printModal">
-		  Imprimir Ticket
-		</button>
+    <button id="printTicketBtn" type="button" class="btn btn-primary">
+      <i class="fas fa-print" aria-hidden="true"></i>
+      <span class="d-none d-sm-inline-block">&nbsp;Imprimir Ticket</span>
+    </button>
 	</div>
 </div>
 
-<!--Print Modal -->
-<div class="modal fade" id="printModal" tabindex="-1" role="dialog" aria-labelledby="printModal" aria-hidden="true">
-  	<div class="modal-dialog modal-dialog-centered" role="document">
-    	<div class="modal-content">
-      		<div class="modal-header">
-        		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          			<span aria-hidden="true">&times;</span>
-        		</button>
-      		</div>
-      		<div class="modal-body">
-      	
-      		</div>
-    	</div>
-  	</div>
-</div>
 <script type="text/javascript">
-$('#printModal').on('show.bs.modal', function (e) {
-
-    var button = $(e.relatedTarget);
-    var modal = $(this);
-
-    // load content from HTML string
-    //modal.find('.modal-body').html("Nice modal body baby...");
-
-    // or, load content from value of data-remote url
-    modal.find('.modal-body').load(button.data("remote"));
-
+$( "#printTicketBtn" ).on( "click", function() {
+    showPrintDialog();
 });
+
+function showPrintDialog() {
+    $.ajax({
+        type: 'GET',
+        url: '{{ FS_ROUTE }}/PrintTicket?documento={{ firstView.model.modelClassName() }}&code={{ currentView.model.primaryColumnValue() }}',        
+        success: function(data) {
+          bootbox.dialog({
+              message: data,
+              onEscape: true,
+              backdrop: true,
+          })
+        }
+    })
+};
 </script>
 {% endblock %}
