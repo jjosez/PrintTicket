@@ -1,2 +1,2 @@
 # PrintTicket
-PrintTicket plugin for Facturascript 
+PrintTicket plugin for [Facturascripts 2018](https://www.facturascripts.com/) 

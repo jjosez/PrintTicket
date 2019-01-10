@@ -1,0 +1,71 @@
+<form id="headerLinesForm" method="POST" autocomplete="off">
+    <input type="hidden" name="documento" value="general">
+    <input type="hidden" name="posicion" value="footer">
+    
+    <div class="card">
+        <div class="card-body">
+            <div class="form-row">
+                <div class="col">
+                    <div class="form-group">              
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fas fa-comment"></i></span>
+                            </div>                        
+                            <input type="text" name="texto" class="form-control" placeholder="Puedes escribir aqui.">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col text-right">
+                    <button class="btn btn-sm btn-success" type="submit" name="accion" value="save">
+                        <i class="fas fa-save fa-fw" aria-hidden="true"></i>
+                        <span class="d-none d-sm-inline-block">Guardar</span>
+                    </button>
+                </div>
+            </div>
+        </div>                           
+    </div>
+</form>
+<br>
+{% for footerLine in fsc.footerLines %}
+<form method="POST" autocomplete="off">
+    <input type="hidden" name="idlinea" value="{{ footerLine.idlinea }}">
+    <input type="hidden" name="documento" value="{{ footerLine.documento }}">
+    <input type="hidden" name="posicion" value="{{ footerLine.posicion }}">
+    
+    <div class="card">
+        <div class="card-body">
+            <div class="form-row">                
+                <div class="col">
+                    <div class="form-group">              
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fas fa-comment"></i></span>
+                            </div>                        
+                            <input type="text" name="texto" value="{{ footerLine.texto|e }}" class="form-control">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <button class="btn btn-sm btn-danger" type="submit" name="accion" value="delete">
+                        <i class="fas fa-trash-alt fa-fw" aria-hidden="true"></i>
+                        <span class="d-none d-sm-inline-block">Eliminar</span>
+                    </button>
+                </div>
+                <div class="col text-right">
+                    <button class="btn btn-sm btn-primary" type="submit" name="accion" value="save">
+                        <i class="fas fa-save fa-fw" aria-hidden="true"></i>
+                        <span class="d-none d-sm-inline-block">Guardar</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<br>
+{% else %}
+    <li><em>no custom lines found</em></li>
+{% endfor %}

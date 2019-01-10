@@ -3,8 +3,10 @@ namespace FacturaScripts\Plugins\PrintTicket\Controller;
 
 use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\Controller;
+use FacturaScripts\Core\Base\DataBase;
 use FacturaScripts\Dinamic\Lib\TicketBuilder;
 use FacturaScripts\Plugins\PrintTicket\Model\Ticket;
+use FacturaScripts\Plugins\PrintTicket\Model\TicketCustomLine;
 
 class PrintTicket extends Controller
 {
@@ -17,6 +19,7 @@ class PrintTicket extends Controller
         $pageData['title'] = 'Configuracion Tickets';
         $pageData['menu'] = 'admin';
         $pageData['icon'] = 'fas fa-print';
+        $pageData['showonmenu'] = FALSE;
 
         return $pageData;
     }
@@ -80,11 +83,13 @@ class PrintTicket extends Controller
 
         if (isset($builder)) {
             $footertext = AppSettings::get('ticket', 'footertext');
+            $headerLines = $this->loadCustomLines('general', 'header');
+            $footerLines = $this->loadCustomLines('general', 'footer');
 
             $builder->setCompany($this->empresa);
             $builder->setDocument($document, $documentType);
-            //$builder->setCostumHeaderLines($this->headerLines); 
-            //$builder->setCostumFooterLines($this->footerLines);      
+            $builder->setCustomHeaderLines($headerLines); 
+            $builder->setCustomFooterLines($footerLines);      
             $builder->setFooterText($footertext);
 
             $ticket = new Ticket();
@@ -92,5 +97,19 @@ class PrintTicket extends Controller
             $ticket->text = $builder->toString();
             $ticket->save();            
         }        
+    }
+
+    public function loadCustomLines($document, $position)
+    {
+        $linea = new TicketCustomLine();
+
+        $where = [
+          new DataBase\DataBaseWhere('documento', $document),
+          new DataBase\DataBaseWhere('posicion', $position, '='),
+        ];
+
+        //$sqlWhere = DataBase\DataBaseWhere::getSQLWhere($where);
+
+        return $linea->all($where);
     }
 }
