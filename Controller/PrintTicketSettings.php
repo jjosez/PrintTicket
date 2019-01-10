@@ -14,7 +14,7 @@ class PrintTicketSettings extends Controller
     public function getPageData()
     {
         $pageData = parent::getPageData();
-        $pageData['title'] = 'Configuracion Tickets B';
+        $pageData['title'] = 'Configuracion de tickets';
         $pageData['menu'] = 'admin';
         $pageData['icon'] = 'fas fa-print';
 
@@ -53,22 +53,8 @@ class PrintTicketSettings extends Controller
                 break;
         }
 
-        $this->headerLines = $this->loadCustomLines('general', 'header');
-        $this->footerLines = $this->loadCustomLines('general', 'footer');
-    }
-
-    public function loadCustomLines($document, $position)
-    {
-        $linea = new TicketCustomLine();
-
-        $where = [
-          new DataBase\DataBaseWhere('documento', $document),
-          new DataBase\DataBaseWhere('posicion', $position, '='),
-        ];
-
-        //$sqlWhere = DataBase\DataBaseWhere::getSQLWhere($where);
-
-        return $linea->all($where);
+        $this->headerLines = (new TicketCustomLine)->getFromDocument('general', 'header');
+        $this->footerLines = (new TicketCustomLine)->getFromDocument('general', 'footer');
     }
 
     public function saveCustomLines()

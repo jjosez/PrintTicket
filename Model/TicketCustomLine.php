@@ -2,6 +2,7 @@
 namespace FacturaScripts\Plugins\PrintTicket\Model;
 
 use FacturaScripts\Core\Model\Base;
+use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 
 class TicketCustomLine extends Base\ModelClass
 {
@@ -25,6 +26,18 @@ class TicketCustomLine extends Base\ModelClass
         }
 
         return false;
+    }
+
+    public function getFromDocument($document, $position)
+    {
+        $where = [
+          new DataBaseWhere('documento', $document),
+          new DataBaseWhere('posicion', $position, '='),
+        ];
+
+        //$sqlWhere = DataBase\DataBaseWhere::getSQLWhere($where);
+
+        return $this->all($where);
     }
 
     public static function primaryColumn()

@@ -83,8 +83,8 @@ class PrintTicket extends Controller
 
         if (isset($builder)) {
             $footertext = AppSettings::get('ticket', 'footertext');
-            $headerLines = $this->loadCustomLines('general', 'header');
-            $footerLines = $this->loadCustomLines('general', 'footer');
+            $headerLines = (new TicketCustomLine)->getFromDocument('general', 'header');
+            $footerLines = (new TicketCustomLine)->getFromDocument('general', 'footer');
 
             $builder->setCompany($this->empresa);
             $builder->setDocument($document, $documentType);
@@ -97,19 +97,5 @@ class PrintTicket extends Controller
             $ticket->text = $builder->toString();
             $ticket->save();            
         }        
-    }
-
-    public function loadCustomLines($document, $position)
-    {
-        $linea = new TicketCustomLine();
-
-        $where = [
-          new DataBase\DataBaseWhere('documento', $document),
-          new DataBase\DataBaseWhere('posicion', $position, '='),
-        ];
-
-        //$sqlWhere = DataBase\DataBaseWhere::getSQLWhere($where);
-
-        return $linea->all($where);
     }
 }
