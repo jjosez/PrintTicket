@@ -28,7 +28,6 @@ class PrintTicket extends Controller
     {
         parent::privateCore($response, $user, $permissions);
         $this->setTemplate('PrintTicketSettings');
-        $appSettings = new AppSettings();
 
         $documentType = $this->request->query->get('documento');
         if ($documentType != '') {
@@ -46,34 +45,24 @@ class PrintTicket extends Controller
             }
             return;
         }
-
-        $footerText = $this->request->request->get('footertext');
-        if ($footerText) {
-            $appSettings->set('ticket', 'footertext', $footerText);
-        }
-
-        $lineLength = $this->request->request->get('linelength');
-        if ($lineLength) {
-            $appSettings->set('ticket', 'linelength', $lineLength);
-        }
-        $appSettings->save();
     }
 
     private function buildTicket($document, $documentType)
     {
         $width = AppSettings::get('ticket', 'linelength');
+        $price = AppSettings::get('ticket', 'printprice');
 
         switch ($documentType) {
             case 'AlbaranCliente':
-                $builder = new TicketBuilder\TicketBuilderAlbaran($width); 
+                $builder = new TicketBuilder\TicketBuilderAlbaran($width, !$price); 
                 break;
 
             case 'factura':
-                $builder = new TicketBuilder\TicketBuilderFactura($width);
+                $builder = new TicketBuilder\TicketBuilderFactura($width, $price);
                 break;
             
             case 'pedido':
-                $builder = new TicketBuilder\TicketBuilderPedido($width);
+                $builder = new TicketBuilder\TicketBuilderPedido($width, $price);
                 break;
             
             default:

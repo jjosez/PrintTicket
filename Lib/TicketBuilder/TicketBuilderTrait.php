@@ -12,6 +12,7 @@ trait TicketBuilderTrait
     protected $ticket;
     protected $paperWidth;
     protected $disabledCommands;
+    protected $printPrice;
 
     protected $document;
     protected $documentType;
@@ -98,16 +99,23 @@ trait TicketBuilderTrait
         foreach ($document->getLines() as $linea) {
             $this->writeSplitter('=');
             $this->writeLabelValue($linea->referencia,$linea->cantidad);
-            $this->writeText($linea->descripcion);
-            $this->writeLabelValue('PVP:',$this->formatPrice($linea->pvpunitario));
-            $this->writeLabelValue('IMPORTE:',$this->formatPrice($linea->pvptotal)); 
+            $this->writeText($linea->descripcion);            
+
+            if ($this->printPrice) {
+                $this->writeLabelValue('PVP:',$this->formatPrice($linea->pvpunitario));
+                $this->writeLabelValue('IMPORTE:',$this->formatPrice($linea->pvptotal));
+            }             
 
             $totaliva += $linea->pvptotal * $linea->iva / 100;            
         }
 
         $this->writeSplitter('=');
-        $this->writeLabelValue('IVA',$this->formatPrice($totaliva));
-        $this->writeLabelValue('TOTAL DEL DOCUMENTO:',$this->formatPrice($document->total));
+        if ($this->printPrice) {
+            $this->writeLabelValue('IVA',$this->formatPrice($totaliva));
+            $this->writeLabelValue('TOTAL DEL DOCUMENTO:',$this->formatPrice($document->total));
+        } else {
+            $this->writeText('Ticket de regalo', true, true);
+        } 
     }
 
     protected function writeFooterBlock($footerLines, $leyenda, $codigo)
