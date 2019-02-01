@@ -4,7 +4,8 @@ namespace FacturaScripts\Plugins\PrintTicket\Controller;
 use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\Controller;
 use FacturaScripts\Core\Base\DataBase;
-use FacturaScripts\Plugins\PrintTicket\Model\TicketCustomLine;
+
+use FacturaScripts\Dinamic\Model\TicketCustomLine;
 
 class PrintTicketSettings extends Controller
 {

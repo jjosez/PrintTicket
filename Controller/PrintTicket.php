@@ -4,9 +4,11 @@ namespace FacturaScripts\Plugins\PrintTicket\Controller;
 use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\Controller;
 use FacturaScripts\Core\Base\DataBase;
+
 use FacturaScripts\Dinamic\Lib\TicketBuilder;
-use FacturaScripts\Plugins\PrintTicket\Model\Ticket;
-use FacturaScripts\Plugins\PrintTicket\Model\TicketCustomLine;
+use FacturaScripts\Dinamic\Model\Ticket;
+use FacturaScripts\Dinamic\Model\TicketCustomLine;
+
 
 class PrintTicket extends Controller
 {
@@ -41,6 +43,7 @@ class PrintTicket extends Controller
                 $document = (new $className)->get($code);                
                 if ($document) {
                     $this->buildTicket($document, $documentType);
+                    $this->documentCode = $document->codigo;
                 }                
             }
             return;
