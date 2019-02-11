@@ -21,7 +21,7 @@ $( "#printTicketBtn" ).on( "click", function() {
 function showPrintDialog() {
     $.ajax({
         type: 'GET',
-        url: '{{ FS_ROUTE }}/PrintTicket?documento={{ firstView.model.modelClassName() }}&code={{ currentView.model.primaryColumnValue() }}',        
+        url: '{{ asset('PrintTicket') }}?documento={{ firstView.model.modelClassName() }}&code={{ currentView.model.primaryColumnValue() }}',        
         success: function(data) {
           bootbox.dialog({
               message: data,

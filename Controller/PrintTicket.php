@@ -60,11 +60,11 @@ class PrintTicket extends Controller
                 $builder = new TicketBuilder\TicketBuilderAlbaran($width, !$price); 
                 break;
 
-            case 'factura':
+            case 'FacturaCliente':
                 $builder = new TicketBuilder\TicketBuilderFactura($width, $price);
                 break;
             
-            case 'pedido':
+            case 'PedidoCliente':
                 $builder = new TicketBuilder\TicketBuilderPedido($width, $price);
                 break;
             
