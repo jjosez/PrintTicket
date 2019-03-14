@@ -1,19 +1,12 @@
 <?php
 namespace FacturaScripts\Plugins\PrintTicket\Controller;
 
-use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\Controller;
-use FacturaScripts\Core\Base\DataBase;
-
-use FacturaScripts\Dinamic\Lib\TicketBuilder;
-use FacturaScripts\Dinamic\Model\Ticket;
-use FacturaScripts\Dinamic\Model\TicketCustomLine;
-
+use FacturaScripts\Dinamic\Lib\TicketPrinter;
 
 class PrintTicket extends Controller
 {
-    public $documentType;
-    public $documentCode;
+    public $businessDocument;
 
     public function getPageData()
     {
@@ -21,7 +14,7 @@ class PrintTicket extends Controller
         $pageData['title'] = 'Configuracion Tickets';
         $pageData['menu'] = 'admin';
         $pageData['icon'] = 'fas fa-print';
-        $pageData['showonmenu'] = FALSE;
+        $pageData['showonmenu'] = false;
 
         return $pageData;
     }
@@ -29,65 +22,31 @@ class PrintTicket extends Controller
     public function privateCore(&$response, $user, $permissions)
     {
         parent::privateCore($response, $user, $permissions);
-        $this->setTemplate('PrintTicketSettings');
+        $this->setTemplate(false);
 
-        $documentType = $this->request->query->get('documento');
-        if ($documentType != '') {
+        $documentModelName = $this->request->query->get('documento');
+        if ($documentModelName != '') {
             $this->setTemplate('PrintTicketScreen');
-            $this->documentType = $documentType;
 
             $code = $this->request->query->get('code');
             if ($code != '') {
                 
-                $className = 'FacturaScripts\\Dinamic\\Model\\' . $documentType;
-                $document = (new $className)->get($code);                
-                if ($document) {
-                    $this->buildTicket($document, $documentType);
-                    $this->documentCode = $document->codigo;
+                $className = 'FacturaScripts\\Dinamic\\Model\\' . $documentModelName;
+                $this->businessDocument = (new $className)->get($code);                
+                if ($this->businessDocument) {
+                    $this->buildTicket($this->businessDocument);
                 }                
             }
             return;
         }
     }
 
-    private function buildTicket($document, $documentType)
+    private function buildTicket($businessDocument)
     {
-        $width = AppSettings::get('ticket', 'linelength');
-        $price = AppSettings::get('ticket', 'printprice');
+        $printer = new TicketPrinter();
 
-        switch ($documentType) {
-            case 'AlbaranCliente':
-                $builder = new TicketBuilder\TicketBuilderAlbaran($width, !$price); 
-                break;
-
-            case 'FacturaCliente':
-                $builder = new TicketBuilder\TicketBuilderFactura($width, $price);
-                break;
-            
-            case 'PedidoCliente':
-                $builder = new TicketBuilder\TicketBuilderPedido($width, $price);
-                break;
-            
-            default:
-                # code...
-                break;
-        }
-
-        if (isset($builder)) {
-            $footertext = AppSettings::get('ticket', 'footertext');
-            $headerLines = (new TicketCustomLine)->getFromDocument('general', 'header');
-            $footerLines = (new TicketCustomLine)->getFromDocument('general', 'footer');
-
-            $builder->setCompany($this->empresa);
-            $builder->setDocument($document, $documentType);
-            $builder->setCustomHeaderLines($headerLines); 
-            $builder->setCustomFooterLines($footerLines);      
-            $builder->setFooterText($footertext);
-
-            $ticket = new Ticket();
-            $ticket->coddocument = $documentType;
-            $ticket->text = $builder->toString();
-            $ticket->save();            
-        }        
+        if ($printer->printTicket($businessDocument)) {
+            return true;
+        }              
     }
 }

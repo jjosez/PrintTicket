@@ -15,7 +15,6 @@ trait TicketBuilderTrait
     protected $printPrice;
 
     protected $document;
-    protected $documentType;
     protected $company;
 
     protected $headerLines;
@@ -27,10 +26,9 @@ trait TicketBuilderTrait
         $this->company = $company;
     }
 
-    public function setDocument($document, $documentType)
+    public function setDocument($document)
     {
         $this->document = $document;
-        $this->documentType = $documentType;
     }
 
     public function setCustomHeaderLines($headerLines)
@@ -83,9 +81,9 @@ trait TicketBuilderTrait
         }               
     }
 
-    protected function writeBodyBlock($document, $documentType)
+    protected function writeBodyBlock($document)
     {
-        $text = strtoupper($documentType) . ' ' . $document->codigo;
+        $text = strtoupper($document->modelClassName()) . ' ' . $document->codigo;
         $this->writeText($text, true, true);
 
         $text = $document->fecha . ' ' . $document->hora;
@@ -94,10 +92,10 @@ trait TicketBuilderTrait
         $this->writeText("CLIENTE: " . $document->nombrecliente);
         $this->writeSplitter('=');
         $this->writeLabelValue('REFERENCIA','CANTIDAD');
+        $this->writeSplitter('=');
 
         $totaliva=0;
-        foreach ($document->getLines() as $linea) {
-            $this->writeSplitter('=');
+        foreach ($document->getLines() as $linea) {            
             $this->writeLabelValue($linea->referencia,$linea->cantidad);
             $this->writeText($linea->descripcion);            
 
@@ -140,7 +138,7 @@ trait TicketBuilderTrait
         
         $this->writeCompanyBlock($this->company);
         $this->writeHeaderBlock($this->headerLines); 
-        $this->writeBodyBlock($this->document, $this->documentType); 
+        $this->writeBodyBlock($this->document); 
         $this->writeFooterBlock($this->footerLines, $this->footerText, $this->document->codigo);      
 
         $this->writeBreakLine(4);
