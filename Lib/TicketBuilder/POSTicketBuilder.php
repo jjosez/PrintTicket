@@ -2,13 +2,28 @@
 namespace FacturaScripts\Plugins\PrintTicket\Lib\TicketBuilder;
 
 /**
-* Clase pare imprimir tickets.
+* Clase auxiliar para la generacion de tickets
 */
-trait TicketWriterTrait
-{   
-    public function writeText($text = '', $linebreake = TRUE, $center = FALSE)
+class POSTicketBuilder
+{
+    private $width;
+    private $ticket;
+    private $cut;
+
+    function __construct($width, $opendrawer, $cut) 
     {
-        $text = substr($text, 0, $this->paperWidth);
+        $this->cut = $cut;
+        $this->ticket = '';
+        $this->width = $width;        
+
+        if ($opendrawer) {
+            $this->openDrawer();
+        }
+    }
+
+    public function addText($text = '', $linebreak = true, $center = false)
+    {
+        $text = substr($text, 0, $this->width);
         if ($text != '') {
             if ($center) {
                 $this->ticket .= $this->centerText($text);
@@ -16,14 +31,14 @@ trait TicketWriterTrait
                 $this->ticket .= $text;
             }            
         } 
-        if ($linebreake) {
-            $this->ticket .= "\n";
+        if ($linebreak) {
+            $this->addLineBreak();
         }                
     }
 
-    public function writeTextBold($text = '', $brake = TRUE, $center = FALSE)
+    public function addTextBold($text = '', $linebreak = true, $center = false)
     {
-        $text = substr($text, 0, $this->paperWidth);
+        $text = substr($text, 0, $this->width);
         $text = chr(27) . chr(69) . chr(49) . $text . chr(27) . chr(69) . chr(48);
         if ($text != '') {
             if ($center) {
@@ -32,12 +47,12 @@ trait TicketWriterTrait
                 $this->ticket .= $text;
             }            
         } 
-        if ($brake) {
-            $this->writeBreakLine();
+        if ($linebreak) {
+            $this->addLineBreak();
         }           
     }
 
-    public function writeTextMultiLine($text = '', $linebreake = TRUE, $center = FALSE)
+    public function addTextMultiLine($text = '', $linebreak = true, $center = false)
     {
         if ($text != '') {
             if ($center) {
@@ -46,41 +61,42 @@ trait TicketWriterTrait
                 $this->ticket .= $text;
             }            
         } 
-        if ($linebreake) {
-            $this->ticket .= "\n";
+        if ($linebreak) {
+            $this->addLineBreak();
         }                
     }
 
-    public function writeBreakLine($n = 1)
+    public function addLineBreak($n = 1)
     {
         for ($i=0; $i < $n; $i++) { 
             $this->ticket .= "\n";
         }        
     }
 
-    public function writeSplitter($splitter = '-')
+    public function addSplitter($splitter = '-')
     {
         $line = '';
-        for ($i = 0; $i < $this->paperWidth; $i++) {
+        for ($i = 0; $i < $this->width; $i++) {
             $line .= $splitter;
         }
 
-        $this->ticket .= $line . "\n";
+        $this->ticket .= $line;
+        $this->addLineBreak();
     }
 
-    public function writeLabelValue($label, $value, $align = '')
+    public function addLabelValueText($label, $value, $align = '')
     {
         $texto = $label;
-        $ancho = $this->paperWidth - strlen($label);
+        $ancho = $this->width - strlen($label);
 
         $value = substr($value, 0, $ancho);
         $texto .= sprintf('%' . $align . $ancho . 's', $value);
 
         $this->ticket .= $texto;
-        $this->writeBreakLine();
+        $this->addLineBreak();
     }
 
-    public function writeBarcode($text = '')
+    public function addBarcode($text = '')
     {
         $barcode = '';
         $barcode .= chr(27) . chr(97) . chr(49); #justification n=0,48 left n=2,49 center n=3,50 right
@@ -91,10 +107,10 @@ trait TicketWriterTrait
         $this->ticket .= $barcode;
     }
 
-    public function centerText($word = '', $ancho = FALSE)
+    public function centerText($word = '', $ancho = false)
     {
         if (!$ancho) {
-            $ancho = $this->paperWidth;
+            $ancho = $this->width;
         }
 
         if (strlen($word) == $ancho) {
@@ -145,7 +161,7 @@ trait TicketWriterTrait
         return $result;
     }
 
-    protected function formatPrice($val, $decimales = 2, $moneda = false)
+    public function formatPrice($val, $decimales = 2, $moneda = false)
     {
         $val = sqrt($val ** 2);
         if ($moneda) {
@@ -154,7 +170,7 @@ trait TicketWriterTrait
         return number_format($val, $decimales, '.', '');
     }
 
-    public function cutPaper()
+    private function cutPaper()
     {
         if ($this->commandToCut) {
             $aux = explode('.', $this->commandToCut);
@@ -163,23 +179,31 @@ trait TicketWriterTrait
                     $this->ticket .= chr($a);
                 }
 
-                $this->writeBreakLine();
+                $this->addLineBreak();
             }
         } 
     }
 
-    public function openDrawer()
+    private function openDrawer()
     {
-        if (!$this->disabledCommands) {            
+        if ($this->commandToOpen) {
             $aux = explode('.', $this->commandToOpen);
             if ($aux) {
                 foreach ($aux as $a) {
                     $this->ticket .= chr($a);
                 }
 
-                $this->ticket .= "\n";
-            }            
+                $this->addLineBreak();
+            } 
+        }       
+    }
+
+    public function getResult()
+    {
+        if ($this->cut) {
+            $this->cutPaper();
         }
+
         return $this->ticket;
     }
 }

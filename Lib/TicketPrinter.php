@@ -11,41 +11,27 @@ class TicketPrinter
     public function printTicket($businessDocument)
     {
         $width = AppSettings::get('ticket', 'linelength');
-        $price = AppSettings::get('ticket', 'printprice');
+        $gift = AppSettings::get('ticket', 'gift', false);
 
         $businessDocumentClass = $businessDocument->modelClassName();
-        switch ($businessDocumentClass) {
-            case 'AlbaranCliente':
-                $builder = new TicketBuilder\TicketBuilderAlbaran($width, !$price); 
-                break;
+        $className = 'FacturaScripts\\Dinamic\\Lib\\TicketBuilder\\TicketTemplate' . $businessDocumentClass;
 
-            case 'FacturaCliente':
-                $builder = new TicketBuilder\TicketBuilderFactura($width, $price);
-                break;
-            
-            case 'PedidoCliente':
-                $builder = new TicketBuilder\TicketBuilderPedido($width, $price);
-                break;
-            
-            default:
-                # code...
-                break;
-        }
+        if (class_exists($className)) {
+            $template = new $className($businessDocument, $width, $gift);
+        }         
 
-        if (isset($builder)) {
+        if (isset($template)) {
             $footertext = AppSettings::get('ticket', 'footertext');
             $headerLines = (new TicketCustomLine)->getFromDocument('general', 'header');
             $footerLines = (new TicketCustomLine)->getFromDocument('general', 'footer');
 
-            $builder->setCompany($businessDocument->getCompany());
-            $builder->setDocument($businessDocument);
-            $builder->setCustomHeaderLines($headerLines); 
-            $builder->setCustomFooterLines($footerLines);      
-            $builder->setFooterText($footertext);
+            $template->setCustomHeaderLines($headerLines); 
+            $template->setCustomFooterLines($footerLines);      
+            $template->setFooterText($footertext);
 
             $ticket = new Ticket();
             $ticket->coddocument = $businessDocumentClass;
-            $ticket->text = $builder->toString();
+            $ticket->text = $template->toString();
             
             if ($ticket->save()) {
                 return true;

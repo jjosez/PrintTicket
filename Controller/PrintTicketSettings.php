@@ -37,10 +37,9 @@ class PrintTicketSettings extends Controller
             $appSettings->set('ticket', 'linelength', $lineLength);
         }
 
-        $printPrice = $this->request->request->get('printprice');
-        if ($lineLength) {
-            $appSettings->set('ticket', 'printprice', $printPrice);
-        }
+        $gift = ($this->request->request->get('gift')) ? true : false;
+        $appSettings->set('ticket', 'gift', $gift);
+        
         $appSettings->save();
 
         $action = $this->request->request->get('accion');

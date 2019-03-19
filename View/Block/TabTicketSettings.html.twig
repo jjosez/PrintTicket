@@ -26,10 +26,10 @@
                 <div class="col">
                     <div class="form-group">
                         <div class="form-check">
-                            {% set printprice = appSettings.get('ticket', 'printprice') %}
-                            <input class="form-check-input" type="checkbox" id="printprice" name="printprice" {{ printprice ? 'checked' }}>
-                            <label class="form-check-label" for="printprice">
-                                No imprimir precios.
+                            {% set gift = appSettings.get('ticket', 'gift', false) %}
+                            <input class="form-check-input" type="checkbox" id="gift" name="gift" {{ gift ? 'checked' }}>
+                            <label class="form-check-label" for="gift">
+                                <i class="fas fa-gift"></i> Ticket de regalo
                             </label>
                         </div>
                     </div>

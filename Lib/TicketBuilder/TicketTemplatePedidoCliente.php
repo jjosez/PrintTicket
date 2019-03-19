@@ -7,10 +7,7 @@ use FacturaScripts\Dinamic\Lib\TicketBuilder;
 * Clase para imprimir tickets de facturas.
 * Si requieres personalizar tu ticket es esta clase la que necesitas modificar.
 */
-class TicketBuilderAlbaran extends TicketBuilder\TicketBuilder
+class TicketTemplatePedidoCliente extends TicketBuilder\TicketTemplateMaster
 {
-    public function __construct($width = null, $comands = FALSE) 
-    {
-        parent::__construct($width, $comands);
-    }
+    
 }
