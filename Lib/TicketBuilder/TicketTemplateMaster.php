@@ -7,11 +7,12 @@ use FacturaScripts\Core\Base\DivisaTools;
 class TicketTemplateMaster
 {
     protected $document;
+    protected $documentTitle;
     protected $footerLines;
     protected $footerText;
-    protected $headerLines;
-    protected $i18n;
     protected $gift;
+    protected $headerLines;
+    protected $i18n;    
     protected $ticket; 
 
     protected static $divisaTools; 
@@ -80,7 +81,7 @@ class TicketTemplateMaster
 
     protected function writeBodyBlock($document)
     {
-        $text = strtoupper($document->modelClassName()) . ' ' . $document->codigo;
+        $text = $this->documentTitle . ' ' . $document->codigo;
         $this->ticket->addText($text, true, true);
 
         $text = $document->fecha . ' ' . $document->hora;

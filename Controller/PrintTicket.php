@@ -45,8 +45,10 @@ class PrintTicket extends Controller
     {
         $printer = new TicketPrinter();
 
-        if ($printer->printTicket($businessDocument)) {
-            return true;
-        }              
+        if (!$printer->printTicket($businessDocument)) {
+            foreach ($printer->getErrors() as $error) {
+                echo $error;
+            }
+        }            
     }
 }
