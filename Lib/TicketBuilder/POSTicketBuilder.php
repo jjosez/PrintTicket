@@ -14,7 +14,9 @@ class POSTicketBuilder
     {
         $this->cut = $cut;
         $this->ticket = '';
-        $this->width = $width;        
+        $this->width = $width;  
+        $this->commandToCut = '27.105';
+        $this->commandToOpen = '27.112.48';      
 
         if ($opendrawer) {
             $this->openDrawer();
@@ -172,7 +174,7 @@ class POSTicketBuilder
 
     private function cutPaper()
     {
-        if ($this->commandToCut) {
+        /*if ($this->commandToCut) {
             $aux = explode('.', $this->commandToCut);
             if ($aux) {
                 foreach ($aux as $a) {
@@ -181,12 +183,14 @@ class POSTicketBuilder
 
                 $this->addLineBreak();
             }
-        } 
+        }*/
+        $this->ticket .= '[[cut]]';
+        $this->addLineBreak();
     }
 
     private function openDrawer()
     {
-        if ($this->commandToOpen) {
+        /*if ($this->commandToOpen) {
             $aux = explode('.', $this->commandToOpen);
             if ($aux) {
                 foreach ($aux as $a) {
@@ -195,7 +199,9 @@ class POSTicketBuilder
 
                 $this->addLineBreak();
             } 
-        }       
+        }*/
+        $this->ticket .= '[[opendrawer]]';
+        $this->addLineBreak();    
     }
 
     public function getResult()
