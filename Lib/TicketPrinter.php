@@ -9,49 +9,57 @@ use FacturaScripts\Dinamic\Model\TicketCustomLine;
 class TicketPrinter
 {
     private $errors = [];
+    private $template;
 
-    public function printTicket($businessDocument)
+    public function printTicket($businessDocument, $asGift = false, $cutPapper = true, $openDrawer = true)
     {
-        $width = AppSettings::get('ticket', 'linelength');
-        $gift = AppSettings::get('ticket', 'gift', false);
-
-        $businessDocumentClass = $businessDocument->modelClassName();
-        $className = 'FacturaScripts\\Dinamic\\Lib\\TicketBuilder\\TicketTemplate' . $businessDocumentClass;
-
-        if (!class_exists($className)) {
-            $this->errors[] = 'No se encontro la plantilla para ' . $businessDocumentClass;
-            return false;
-        } 
-
-        $template = new $className($businessDocument, $width, $gift);   
-
-        if (!isset($template)) {
-            $this->errors[] = 'Error al cargar la plantilla ' .$businessDocumentClass;
+        if (!$this->initTemplate($businessDocument)) {
             return false;
         }
 
+        $width = AppSettings::get('ticket', 'linelength');
         $footertext = AppSettings::get('ticket', 'footertext');
         $headerLines = (new TicketCustomLine)->getFromDocument('general', 'header');
         $footerLines = (new TicketCustomLine)->getFromDocument('general', 'footer');
 
-        $template->setCustomHeaderLines($headerLines); 
-        $template->setCustomFooterLines($footerLines);      
-        $template->setFooterText($footertext);
+        $this->template->setCustomHeaderLines($headerLines); 
+        $this->template->setCustomFooterLines($footerLines);      
+        $this->template->setFooterText($footertext);
 
         $ticket = new Ticket();
-        $ticket->coddocument = $businessDocumentClass;
-        $ticket->text = $template->toString();     
+        $ticket->coddocument = $businessDocument->modelClassName();
+        $ticket->text = $this->template->toString($asGift, $cutPapper, $openDrawer);     
 
         if ($ticket->save()) {
             return true;
         }
 
         $this->errors[] = 'Error al guardar el ticket ' .$businessDocumentClass;
-        return false;        
+        return false;   
     }
 
     public function getErrors()
     {
         return $this->errors;
+    }
+
+    private function initTemplate($businessDocument)
+    {
+        $businessDocumentClass = $businessDocument->modelClassName();
+        $templateClassName = 'FacturaScripts\\Dinamic\\Lib\\TicketBuilder\\TicketTemplate' . $businessDocumentClass;
+
+        if (!class_exists($templateClassName)) {
+            $this->errors[] = 'No se encontro la clase TicketTemplate' . $businessDocumentClass;
+            return false;
+        } 
+
+        $this->template = new $templateClassName($businessDocument, $width);   
+
+        if (!isset($this->template)) {
+            $this->errors[] = 'Error al cargar la clase TicketTemplate' . $businessDocumentClass;
+            return false;
+        }
+
+        return true;
     }
 }

@@ -8,19 +8,11 @@ class POSTicketBuilder
 {
     private $width;
     private $ticket;
-    private $cut;
 
-    function __construct($width, $opendrawer, $cut) 
+    function __construct($width) 
     {
-        $this->cut = $cut;
         $this->ticket = '';
-        $this->width = $width;  
-        $this->commandToCut = '27.105';
-        $this->commandToOpen = '27.112.48';      
-
-        if ($opendrawer) {
-            $this->openDrawer();
-        }
+        $this->width = $width;   
     }
 
     public function addText($text = '', $linebreak = true, $center = false)
@@ -172,44 +164,20 @@ class POSTicketBuilder
         return number_format($val, $decimales, '.', '');
     }
 
-    private function cutPaper()
+    public function cutPapper()
     {
-        /*if ($this->commandToCut) {
-            $aux = explode('.', $this->commandToCut);
-            if ($aux) {
-                foreach ($aux as $a) {
-                    $this->ticket .= chr($a);
-                }
-
-                $this->addLineBreak();
-            }
-        }*/
         $this->ticket .= '[[cut]]';
         $this->addLineBreak();
     }
 
-    private function openDrawer()
+    public function openDrawer()
     {
-        /*if ($this->commandToOpen) {
-            $aux = explode('.', $this->commandToOpen);
-            if ($aux) {
-                foreach ($aux as $a) {
-                    $this->ticket .= chr($a);
-                }
-
-                $this->addLineBreak();
-            } 
-        }*/
         $this->ticket .= '[[opendrawer]]';
         $this->addLineBreak();    
     }
 
     public function getResult()
     {
-        if ($this->cut) {
-            $this->cutPaper();
-        }
-
         return $this->ticket;
     }
 }

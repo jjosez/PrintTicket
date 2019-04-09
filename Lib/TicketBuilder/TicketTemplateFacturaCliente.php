@@ -9,9 +9,9 @@ use FacturaScripts\Dinamic\Lib\TicketBuilder;
 */
 class TicketTemplateFacturaCliente extends TicketBuilder\TicketTemplateMaster
 {
-    function __construct($document, $width = 45, $gift = false, $opendrawer = true, $cutpaper = true) 
+    function __construct($document, $width = 45) 
     {
-        parent::__construct($document, $width, $gift, $opendrawer, $cutpaper);
+        parent::__construct($document, $width);
         
         $this->documentTitle = $this->i18n->trans('customer-invoice');
     }    

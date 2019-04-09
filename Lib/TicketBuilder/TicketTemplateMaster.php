@@ -17,7 +17,7 @@ class TicketTemplateMaster
 
     protected static $divisaTools; 
 
-    function __construct($document, $width = 45, $gift = false, $opendrawer = true, $cutpaper = true) 
+    function __construct($document, $width = 45) 
     {
         $this->document = $document;
         $this->footerLines = [];
@@ -25,7 +25,7 @@ class TicketTemplateMaster
         $this->gift = $gift;
 
         $this->i18n = new Translator();
-        $this->ticket = new POSTicketBuilder($width , $opendrawer, $cutpaper); 
+        $this->ticket = new POSTicketBuilder($width); 
 
         static::$divisaTools = new DivisaTools();
     }
@@ -79,7 +79,7 @@ class TicketTemplateMaster
         }               
     }
 
-    protected function writeBodyBlock($document)
+    protected function writeBodyBlock($document, $gift = false)
     {
         $text = $this->documentTitle . ' ' . $document->codigo;
         $this->ticket->addText($text, true, true);
@@ -128,14 +128,18 @@ class TicketTemplateMaster
         $this->ticket->addBarcode($codigo);
     }
 
-    public function toString() : string
-    {        
+    public function toString($gift , $cut = false, $open = false) : string
+    {
+        ($open) ? $this->ticket->openDrawer() : NULL;
+
         $this->writeCompanyBlock($this->document->getCompany());
         $this->writeHeaderBlock($this->headerLines); 
-        $this->writeBodyBlock($this->document); 
+        $this->writeBodyBlock($this->document, $gift); 
         $this->writeFooterBlock($this->footerLines, $this->footerText, $this->document->codigo);      
 
         $this->ticket->addLineBreak(4);
+
+        ($cut) ? $this->ticket->cutPapper() : NULL;
         
         return $this->ticket->getResult();
     }
