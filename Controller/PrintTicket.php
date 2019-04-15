@@ -3,6 +3,7 @@ namespace FacturaScripts\Plugins\PrintTicket\Controller;
 
 use FacturaScripts\Core\Base\Controller;
 use FacturaScripts\Dinamic\Lib\TicketPrinter;
+use FacturaScripts\Dinamic\Lib\BusinessDocumentTicket;
 
 class PrintTicket extends Controller
 {
@@ -35,6 +36,7 @@ class PrintTicket extends Controller
                 $this->businessDocument = (new $className)->get($code);                
                 if ($this->businessDocument) {
                     $this->buildTicket($this->businessDocument);
+                    $this->savePrintJob($this->businessDocument);
                 }                
             }
             return;
@@ -50,5 +52,11 @@ class PrintTicket extends Controller
                 echo $error;
             }
         }            
+    }
+
+    private function savePrintJob($document)
+    {
+        $businessTicket = new BusinessDocumentTicket($document); 
+        echo $businessTicket->getTicket();
     }
 }
