@@ -32,7 +32,7 @@ class Document
 
     public function getDate() : string
     {
-        return $this->date;
+        return $this->date->format('Y-m-d H:i:s');
     }
 
     public function getTotal() : string
@@ -55,13 +55,13 @@ class Document
         return $this->payments;
     }
 
-    public function addLine(string $code, $price, $quantity, $tax) : DocumentLine
+    public function addLine(string $code, $description, $price, $quantity, $tax) : DocumentLine
     {
-        $this->lines[] = new DocumentLine($code, $price, $quantity, $tax);
+        return $this->lines[] = new DocumentLine($code, $description, $price, $quantity, $tax);
     }
 
     public function addPayment(string $method, $amount) : DocumentPayment
     {
-        $this->payments[] = new DocumentPayment($method, $amount);
+        return $this->payments[] = new DocumentPayment($method, $amount);
     }
 }

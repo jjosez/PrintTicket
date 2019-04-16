@@ -29,7 +29,7 @@ class Cashup
 
     public function getDate() : string
     {
-        return $this->date;
+        return $this->date->format('Y-m-d H:i:s');
     }
 
     public function getSpectedTotal() : string

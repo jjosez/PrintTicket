@@ -2,8 +2,8 @@
 namespace FacturaScripts\Plugins\PrintTicket\Controller;
 
 use FacturaScripts\Core\Base\Controller;
-use FacturaScripts\Dinamic\Lib\TicketPrinter;
 use FacturaScripts\Dinamic\Lib\BusinessDocumentTicket;
+use FacturaScripts\Dinamic\Model\Ticket;
 
 class PrintTicket extends Controller
 {
@@ -23,40 +23,35 @@ class PrintTicket extends Controller
     public function privateCore(&$response, $user, $permissions)
     {
         parent::privateCore($response, $user, $permissions);
-        $this->setTemplate(false);
+        $this->setTemplate('PrintTicketScreen');
 
-        $documentModelName = $this->request->query->get('documento');
-        if ($documentModelName != '') {
-            $this->setTemplate('PrintTicketScreen');
+        $code = $this->request->query->get('code');
+        $modelName = $this->request->query->get('documento');        
 
-            $code = $this->request->query->get('code');
-            if ($code != '') {
-                
-                $className = 'FacturaScripts\\Dinamic\\Model\\' . $documentModelName;
-                $this->businessDocument = (new $className)->get($code);                
-                if ($this->businessDocument) {
-                    $this->buildTicket($this->businessDocument);
-                    $this->savePrintJob($this->businessDocument);
-                }                
-            }
+        if ('' === $modelName || '' === $code) {
             return;
         }
-    }
-
-    private function buildTicket($businessDocument)
-    {
-        $printer = new TicketPrinter();
-
-        if (!$printer->printTicket($businessDocument)) {
-            foreach ($printer->getErrors() as $error) {
-                echo $error;
-            }
-        }            
+        
+        $className = 'FacturaScripts\\Dinamic\\Model\\' . $modelName;
+        
+        $this->businessDocument = (new $className)->get($code);
+        if ($this->businessDocument) {
+            $this->savePrintJob($this->businessDocument);
+        }
     }
 
     private function savePrintJob($document)
     {
         $businessTicket = new BusinessDocumentTicket($document); 
-        echo $businessTicket->getTicket();
+
+        $ticket = new Ticket();
+        $ticket->coddocument = $document->modelClassName();
+        $ticket->text = $businessTicket->getTicket();  
+
+        //echo $businessTicket->getTicket();   
+
+        if (!$ticket->save()) {
+            echo 'Error al guardar el ticket';
+        }
     }
 }

@@ -3,9 +3,11 @@ namespace FacturaScripts\Plugins\PrintTicket\Lib;
 
 use DateTime;
 use FacturaScripts\Core\App\AppSettings;
-use FacturaScripts\Dinamic\Lib\Ticket\Data;
-use FacturaScripts\Dinamic\Lib\Ticket\TicketBuilder;
-use FacturaScripts\Dinamic\Lib\Ticket\Template; 
+use FacturaScripts\Dinamic\Lib\Ticket\Data\Cashup;
+use FacturaScripts\Dinamic\Lib\Ticket\Data\Company;
+use FacturaScripts\Dinamic\Lib\Ticket\Data\Customer;
+use FacturaScripts\Dinamic\Lib\Ticket\Data\Document;
+use FacturaScripts\Dinamic\Lib\Ticket\Template\DefaultTemplate;
 use FacturaScripts\Dinamic\Model\TicketCustomLine;
 
 class BusinessDocumentTicket
@@ -20,20 +22,24 @@ class BusinessDocumentTicket
     public function getTicket()
     {
         $xcompany = $this->document->getCompany();
-        $company = new Data\Company(
+        $company = new Company(
             $xcompany->nombrecorto,
             $xcompany->cifnif,
             $xcompany->direccion
         );
 
-        $document = new Data\Document(
+        $document = new Document(
             $this->document->codigo,
             $this->document->total,
             $this->document->totaliva,
             null
         );
 
-        $customer = new Data\Customer(
+        foreach ($this->document->getLines() as $line) {
+            $document->addLine($line->referencia, $line->descripcion, $line->pvpunitario, $line->cantidad, $line->iva);
+        }
+
+        $customer = new Customer(
             $this->document->nombrecliente,
             $this->document->cifnif,
             $this->document->direccion,
@@ -46,10 +52,10 @@ class BusinessDocumentTicket
         $data = (new TicketCustomLine)->getFromDocument('general', 'footer');
         $footlines = $this->getLines($data);
 
-        $width = AppSettings::get('ticket', 'linelength');
-        $template = new Template\DefaultTemplate($width);
+        $width = AppSettings::get('ticket', 'linelength', 50);
+        $template = new DefaultTemplate($width);
 
-        $builder = new TicketBuilder($company,'80',null);
+        $builder = new Ticket\TicketBuilder($company, $template);
         return $builder->buildFromDocument($document, $customer, $headlines, $footlines);
     }
 
