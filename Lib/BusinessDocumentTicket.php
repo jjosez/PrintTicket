@@ -36,7 +36,13 @@ class BusinessDocumentTicket
         );
 
         foreach ($this->document->getLines() as $line) {
-            $document->addLine($line->referencia, $line->descripcion, $line->pvpunitario, $line->cantidad, $line->iva);
+            $document->addLine(
+                $line->referencia, 
+                $line->descripcion, 
+                $line->pvpunitario, 
+                $line->cantidad, 
+                $line->iva
+            );
         }
 
         $customer = new Customer(
@@ -47,10 +53,10 @@ class BusinessDocumentTicket
         );
 
         $data = (new TicketCustomLine)->getFromDocument('general', 'header');
-        $headlines = $this->getLines($data);
+        $headlines = $this->getCustomLines($data);
         
         $data = (new TicketCustomLine)->getFromDocument('general', 'footer');
-        $footlines = $this->getLines($data);
+        $footlines = $this->getCustomLines($data);
 
         $width = AppSettings::get('ticket', 'linelength', 50);
         $template = new DefaultTemplate($width);
@@ -59,7 +65,7 @@ class BusinessDocumentTicket
         return $builder->buildFromDocument($document, $customer, $headlines, $footlines);
     }
 
-    private function getLines($data)
+    private function getCustomLines($data)
     {
         $lines = [];
         foreach ($data as $line) {

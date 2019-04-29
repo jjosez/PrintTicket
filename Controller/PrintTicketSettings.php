@@ -1,4 +1,21 @@
 <?php
+/**
+ * This file is part of PrintTicket plugin for FacturaScripts
+ * Copyright (C) 2018-2019 Juan José Prieto Dzul <juanjoseprieto88@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 namespace FacturaScripts\Plugins\PrintTicket\Controller;
 
 use FacturaScripts\Core\App\AppSettings;
@@ -7,6 +24,11 @@ use FacturaScripts\Core\Base\DataBase;
 
 use FacturaScripts\Dinamic\Model\TicketCustomLine;
 
+/**
+ * Controller to save general settings to use generating receipts.
+ *
+ * @author Juan José Prieto Dzul <juanjoseprieto88@gmail.com>
+ */
 class PrintTicketSettings extends Controller
 {
     public $headerLines;

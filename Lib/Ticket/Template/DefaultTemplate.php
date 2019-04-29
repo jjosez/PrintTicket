@@ -106,6 +106,7 @@ class DefaultTemplate extends AbstractTemplate
         $this->printer->columnText('REFERENCIA','CANTIDAD');
         $this->printer->lineSplitter('=');
 
+        $totaliva = 0.0;
         foreach ($this->document->getLines() as $line) {
             $this->printer->columnText($line->getCode(), $line->getQuantity());
             $this->printer->text($line->getDescription());
@@ -113,7 +114,7 @@ class DefaultTemplate extends AbstractTemplate
             $this->printer->columnText('PVP:', $line->getPrice());
             $this->printer->columnText('IMPORTE:', $line->getTotal());
 
-            $totaliva += $linea->pvptotal * $linea->iva / 100;    
+            $totaliva += $line->getTotal() * $line->getTax() / 100;    
         }
 
         $this->printer->lineSplitter('=');          
