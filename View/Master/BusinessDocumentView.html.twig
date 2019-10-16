@@ -1,8 +1,6 @@
 {% extends "@Core/Master/BusinessDocumentView.html.twig" %}
 
 {% block extras %}
-{% set firstView = fsc.views | first %}
-
 <div class="row pb-3">
 	<div class="col-12 text-center">
 		<!-- Button trigger modal -->
@@ -21,7 +19,7 @@ $( "#printTicketBtn" ).on( "click", function() {
 function showPrintDialog() {
     $.ajax({
         type: 'GET',
-        url: '{{ asset('PrintTicket') }}?documento={{ firstView.model.modelClassName() }}&code={{ currentView.model.primaryColumnValue() }}',        
+        url: '{{ asset('PrintTicket') }}?documento={{ currentView.model.modelClassName() }}&code={{ currentView.model.primaryColumnValue() }}',        
         success: function(data) {
           bootbox.dialog({
               message: data,
