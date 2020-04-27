@@ -2,22 +2,25 @@
 
 namespace FacturaScripts\Plugins\PrintTicket\Lib\Ticket\Data;
 
+use DateTime;
+
 /**
  *          
  */
 class Cashup
 {
-    private $code;    
-    private $spectedTotal;
-    private $total;
+    private $code;
     private $date;
+    private $operations = [];
     private $payments = [];
+    private $spected;
+    private $total;
 
 
-    function __construct(string $code, string $spectedTotal, string $total, ?DateTime $date)
+    function __construct(string $code, string $spected, string $total, ?DateTime $date)
     {
         $this->code = $code;
-        $this->spectedTotal = $spectedTotal;
+        $this->spected = $spected;
         $this->total = $total;
         $this->date = $date ?: new DateTime();
     }
@@ -34,12 +37,17 @@ class Cashup
 
     public function getSpectedTotal() : string
     {
-        return $this->total;
+        return $this->spected;
     }
 
     public function getTotal() : string
     {
-        return $this->totalTax;
+        return $this->total;
+    }
+
+    public function getOperations() : array
+    {
+        return $this->operations;
     }
 
     public function getPayments() : array
@@ -47,7 +55,12 @@ class Cashup
         return $this->payments;
     }
 
-    public function addPayment(string $method, $amount) : DocumentPayment
+    public function addOperation(string $id, string $code, $amount) : CashupOperation
+    {
+        return $this->operations[] = new CashupOperation($id, $code, $amount);
+    }
+
+    public function addPayment(string $method, $amount)
     {
         $this->payments[] = new DocumentPayment($method, $amount);
     }

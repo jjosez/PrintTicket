@@ -9,6 +9,7 @@ use FacturaScripts\Dinamic\Lib\Ticket\Data\Customer;
 use FacturaScripts\Dinamic\Lib\Ticket\Data\Document;
 use FacturaScripts\Dinamic\Lib\Ticket\Template\DefaultTemplate;
 use FacturaScripts\Dinamic\Model\TicketCustomLine;
+use FacturaScripts\Plugins\PrintTicket\Lib\Ticket\Template\DefaultDocumentTemplate;
 
 class BusinessDocumentTicket
 {
@@ -59,7 +60,7 @@ class BusinessDocumentTicket
         $footlines = $this->getCustomLines($data);
 
         $width = AppSettings::get('ticket', 'linelength', 50);
-        $template = new DefaultTemplate($width);
+        $template = new DefaultDocumentTemplate($width);
 
         $builder = new Ticket\TicketBuilder($company, $template);
         return $builder->buildFromDocument($document, $customer, $headlines, $footlines);

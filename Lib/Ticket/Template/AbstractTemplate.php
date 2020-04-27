@@ -16,7 +16,7 @@ abstract class AbstractTemplate
     protected $company;
     protected $printer;
 
-    public function __construct($width)
+    public function __construct($width = '50')
     {
         $this->printer = new Printer($width);
     }

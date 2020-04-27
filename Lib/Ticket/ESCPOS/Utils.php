@@ -46,7 +46,7 @@ class Utils
         return $result;
     }
 
-    private function centerTextAux($word = '', $width)
+    private static function centerTextAux($word = '', $width)
     {
         $symbol = " ";
         $middle = round($width / 2);

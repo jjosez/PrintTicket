@@ -6,7 +6,7 @@ use FacturaScripts\Dinamic\Lib\Ticket\Data\Cashup;
 use FacturaScripts\Dinamic\Lib\Ticket\Data\Company;
 use FacturaScripts\Dinamic\Lib\Ticket\Data\Customer;
 use FacturaScripts\Dinamic\Lib\Ticket\Data\Document;
-use FacturaScripts\Dinamic\Lib\Ticket\Template\DefaultTemplate;  
+use FacturaScripts\Dinamic\Lib\Ticket\Template\AbstractTemplate;
 
 /**
  * 
@@ -16,10 +16,10 @@ class TicketBuilder
     private $company;
     private $template;
     
-    function __construct(Company $company, ?DefaultTemplate $template)
+    function __construct(Company $company, ?AbstractTemplate $template)
     {
         $this->company = $company;
-        $this->template = ($template) ?: new DefaultTemplate();
+        $this->template = $template;
     }
 
     public function buildFromDocument(
