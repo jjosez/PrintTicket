@@ -28,16 +28,17 @@ class CashupTicket
 
         $cashup = new Cashup(
             $this->session->idsesion,
+            $this->session->saldoinicial,
             $this->session->saldoesperado,
             $this->session->saldocontado,
             null
         );
 
-        foreach ($this->session->getOperaciones() as $operacion) {
+        foreach ($this->session->getOperaciones() as $oper) {
             $cashup->addOperation(
-                $operacion->idoperacion,
-                $operacion->tipodoc . ' ' . $operacion->iddocumento,
-                $operacion->total
+                'Operacion: ' . $oper->idoperacion,
+                $oper->tipodoc . ' ' . $oper->codigo,
+                $oper->total
             );
         }
 
@@ -46,15 +47,5 @@ class CashupTicket
 
         $builder = new Ticket\TicketBuilder($company, $template);
         return $builder->buildFromCashup($cashup);
-    }
-
-    private function getCustomLines($data)
-    {
-        $lines = [];
-        foreach ($data as $line) {
-            $lines[] = $line->texto;
-        }
-
-        return $lines;
     }
 }

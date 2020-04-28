@@ -81,6 +81,8 @@ class DefaultCashupTemplate extends AbstractTemplate
             $this->printer->columnText($operation->getCode(), $operation->getAmount());
         }
 
+        $this->printer->columnText('SALDO INICIAL', $this->cashup->getInitialAmount());
+
         $this->printer->lineSplitter('=');          
         $this->printer->columnText('TOTAL ESPERADO', $this->cashup->getSpectedTotal());
         $this->printer->columnText('TOTAL CONTADO:', $this->cashup->getTotal());

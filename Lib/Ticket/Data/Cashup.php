@@ -11,15 +11,17 @@ class Cashup
 {
     private $code;
     private $date;
+    private $initial;
     private $operations = [];
     private $payments = [];
     private $spected;
     private $total;
 
 
-    function __construct(string $code, string $spected, string $total, ?DateTime $date)
+    function __construct(string $code, string $initial, string $spected, string $total, ?DateTime $date)
     {
         $this->code = $code;
+        $this->initial = $initial;
         $this->spected = $spected;
         $this->total = $total;
         $this->date = $date ?: new DateTime();
@@ -33,6 +35,11 @@ class Cashup
     public function getDate() : string
     {
         return $this->date->format('Y-m-d H:i:s');
+    }
+
+    public function getInitialAmount() : string
+    {
+        return $this->initial;
     }
 
     public function getSpectedTotal() : string
