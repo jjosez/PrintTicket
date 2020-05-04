@@ -1,9 +1,7 @@
 <?php
 namespace FacturaScripts\Plugins\PrintTicket;
 
-use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
-use FacturaScripts\Core\Base\EventManager;
 use FacturaScripts\Core\Base\InitClass;
 use FacturaScripts\Core\Model\ApiKey;
 
