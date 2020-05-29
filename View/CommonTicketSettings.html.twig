@@ -1,17 +1,17 @@
 <form id="formTicketSettings" method="post" enctype="multipart/form-data">
-    <input type="hidden" name="action" value="edit">
+    <input type="hidden" name="action" value="save-settings">
     <div class="card">
         <div class="card-body">
             <div class="form-row">
                 <input type="hidden" name="id" value="1">
-                <div class="col-md-4">
+                <div class="col-md-2">
                     <div class="form-group">
-                        <label>N&uacute;mero de caracteres por linea.</label>
+                        <label>N&uacute;mero de caracteres.</label>
                         {% set linelength = appSettings.get('ticket', 'linelength', 50) %}
                         <input type="text" name="linelength" value="{{ linelength }}" class="form-control" required="">
                     </div>
                 </div>
-                <div class="col-md-8">
+                <div class="col-md-10">
                     <div class="form-group">
                         <label>Texto al pie del ticket.</label>
                         <div class="input-group">
@@ -33,20 +33,10 @@
                             </label>
                         </div>
                     </div>
-                </div>  
+                </div>
             </div>
             <div class="row">
-                <div class="col">
-                    <button type="button" class="btn btn-sm btn-danger" onclick="this.form.submit();">
-                        <i class="fas fa-trash-alt fa-fw" aria-hidden="true"></i>
-                        <span class="d-none d-sm-inline-block">Eliminar</span>
-                    </button>
-                </div>
                 <div class="col text-right">
-                    <button class="btn btn-sm btn-secondary" type="reset">
-                        <i class="fas fa-undo fa-fw" aria-hidden="true"></i>
-                        <span class="d-none d-sm-inline-block">Deshacer</span>
-                    </button>
                     <button class="btn btn-sm btn-primary" type="submit">
                         <i class="fas fa-save fa-fw" aria-hidden="true"></i>
                         <span class="d-none d-sm-inline-block">Guardar</span>

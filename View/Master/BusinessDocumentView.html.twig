@@ -3,8 +3,7 @@
 {% block extras %}
 <div class="row pb-3">
 	<div class="col-12 text-center">
-		<!-- Button trigger modal -->
-    <button id="printTicketBtn" type="button" class="btn btn-sm btn-primary" {{ (currentView.model.primaryColumnValue()) ? '' : 'disabled' }}>
+    <button id="printTicketBtn" type="button" class="btn btn-sm btn-primary" {{ (thisView.model.primaryColumnValue()) ? '' : 'disabled' }}>
       <i class="fas fa-print" aria-hidden="true"></i>
       <span class="d-none d-sm-inline-block">&nbsp;Imprimir Ticket</span>
     </button>
@@ -19,7 +18,7 @@ $( "#printTicketBtn" ).on( "click", function() {
 function showPrintDialog() {
     $.ajax({
         type: 'GET',
-        url: '{{ asset('PrintTicket') }}?documento={{ currentView.model.modelClassName() }}&code={{ currentView.model.primaryColumnValue() }}',        
+        url: '{{ asset('PrintTicket') }}?documento={{ thisView.model.modelClassName() }}&code={{ thisView.model.primaryColumnValue() }}',
         success: function(data) {
           bootbox.dialog({
               message: data,
