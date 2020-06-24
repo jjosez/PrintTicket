@@ -6,14 +6,14 @@
                 <input type="hidden" name="id" value="1">
                 <div class="col-md-2">
                     <div class="form-group">
-                        <label>N&uacute;mero de caracteres.</label>
+                        <label>N&uacute;mero de caracteres</label>
                         {% set linelength = appSettings.get('ticket', 'linelength', 50) %}
                         <input type="text" name="linelength" value="{{ linelength }}" class="form-control" required="">
                     </div>
                 </div>
                 <div class="col-md-10">
                     <div class="form-group">
-                        <label>Texto al pie del ticket.</label>
+                        <label>Texto al pie del ticket</label>
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text"><i class="fas fa-comment"></i></span>

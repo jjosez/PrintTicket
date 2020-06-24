@@ -31,11 +31,10 @@ class TicketCustomLine extends Base\ModelClass
     public function getFromDocument($document, $position)
     {
         $where = [
-          new DataBaseWhere('documento', $document),
-          new DataBaseWhere('posicion', $position, '='),
+            new DataBaseWhere('documento', $document),
+            new DataBaseWhere('documento', 'general', '=', 'OR'),
+            new DataBaseWhere('posicion', $position, '='),
         ];
-
-        //$sqlWhere = DataBase\DataBaseWhere::getSQLWhere($where);
 
         return $this->all($where);
     }

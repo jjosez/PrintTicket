@@ -29,7 +29,9 @@ use FacturaScripts\Dinamic\Model\Ticket;
  */
 class PrintTicket extends Controller
 {
-    public $businessDocument;
+    const MODEL_NAMESPACE = '\\FacturaScripts\\Dinamic\\Model\\';
+
+    public $document;
 
     public function getPageData()
     {
@@ -47,30 +49,29 @@ class PrintTicket extends Controller
         parent::privateCore($response, $user, $permissions);
         $this->setTemplate('PrintTicketScreen');
 
-        $code = $this->request->query->get('code');
-        $modelName = $this->request->query->get('documento');        
+        //$code = $this->request->query->get('code');
+        $code = $this->request->request->get('code');
+        $modelName = $this->request->request->get('documento');
 
         if ('' === $modelName || '' === $code) {
             return;
         }
-        
-        $className = 'FacturaScripts\\Dinamic\\Model\\' . $modelName;
-        
-        $this->businessDocument = (new $className)->get($code);
-        if ($this->businessDocument) {
-            $this->savePrintJob($this->businessDocument);
-        }
+
+        $this->savePrintJob($modelName, $code);
     }
 
-    private function savePrintJob($document)
+    protected function savePrintJob($modelName, $code)
     {
-        $businessTicket = new BusinessDocumentTicket($document); 
+        $className = self::MODEL_NAMESPACE . $modelName;
+        $document = (new $className)->get($code);
+
+        if (false === $document) return;
+
+        $businessTicket = new BusinessDocumentTicket($document);
 
         $ticket = new Ticket();
-        $ticket->coddocument = $document->modelClassName();
-        $ticket->text = $businessTicket->getTicket();  
-
-        //echo $businessTicket->getTicket();   
+        $ticket->coddocument = $this->document = $document->modelClassName();
+        $ticket->text = $businessTicket->getTicket();
 
         if (!$ticket->save()) {
             echo 'Error al guardar el ticket';

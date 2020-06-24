@@ -24,7 +24,7 @@
 <view>
     <columns>
         <group name="data" numcolumns="12">
-            <column name="idlinea" title="id" numcolumns="1" order="100">
+            <column name="idlinea" title="id" display="none" order="100">
                 <widget type="text" fieldname="idlinea" readonly="true" />
             </column>
             <column name="documento" display="none" order="110">
@@ -33,7 +33,7 @@
             <column name="ubicacion" display="none" order="120">
                 <widget type="text" fieldname="posicion" maxlength="30" />
             </column>
-            <column name="texto" title="text" numcolumns="11" order="130">
+            <column name="message" title="message" numcolumns="12" order="130">
                 <widget type="text" fieldname="texto" maxlength="200" />
             </column>
         </group>

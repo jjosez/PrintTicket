@@ -17,7 +17,7 @@ class Document
     private $payments = [];
 
 
-    function __construct(string $code, string $total, string $totalTax, ?DateTime $date)
+    function __construct(string $code, string $total, string $totalTax, DateTime $date = null)
     {
         $this->code = $code;
         $this->total = $total;

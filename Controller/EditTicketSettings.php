@@ -40,9 +40,10 @@ class EditTicketSettings extends PanelController
     protected function createViews()
     {
         $this->setTemplate('EditTicketSettings');
+
         $this->addHtmlView('TicketSettings', 'CommonTicketSettings', 'TicketCustomLine', 'common-ticket-settings', 'fas fa-print');
-        $this->addEditListView('EditTicketFootLine', 'TicketCustomLine', 'footer-custom-lines', 'fas fa-list-ul');
         $this->addEditListView('EditTicketHeadLine', 'TicketCustomLine', 'header-custom-lines', 'fas fa-list-ul');
+        $this->addEditListView('EditTicketFootLine', 'TicketCustomLine', 'footer-custom-lines', 'fas fa-list-ul');
 
         $this->setSettings('TicketSettings', 'btnNew', false);
     }
@@ -61,16 +62,17 @@ class EditTicketSettings extends PanelController
 
     protected function loadData($viewName, $view)
     {
+        $order = ['documento' => 'ASC', 'idlinea' => 'DESC'];
         switch ($viewName) {
             case 'EditTicketFootLine':
                 $where = [new DataBaseWhere('posicion', 'footer')];
-                $view->loadData('', $where, ['idlinea' => 'DESC']);
+                $view->loadData('', $where, $order);
                 $this->hasData = true;
                 break;
 
             case 'EditTicketHeadLine':
                 $where = [new DataBaseWhere('posicion', 'header')];
-                $view->loadData('', $where, ['idlinea' => 'DESC']);
+                $view->loadData('', $where, $order);
                 break;
             case 'TicketSettings':
                 $this->hasData = true;

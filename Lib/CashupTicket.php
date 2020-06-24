@@ -9,13 +9,15 @@ use FacturaScripts\Plugins\PrintTicket\Lib\Ticket\Template\DefaultCashupTemplate
 
 class CashupTicket
 {
-    private $session;
     private $company;
+    private $session;
+    private $width;
 
-    function __construct($session, $company)
+    function __construct($session, $company, float $width = null)
     {
-        $this->session = $session;
         $this->company = $company;
+        $this->session = $session;
+        $this->width = (empty($width)) ? $this->getDefaultWitdh() : $width;
     }
 
     public function getTicket()
@@ -42,10 +44,14 @@ class CashupTicket
             );
         }
 
-        $width = AppSettings::get('ticket', 'linelength', 50);
-        $template = new DefaultCashupTemplate($width);
+        $template = new DefaultCashupTemplate($this->width);
 
         $builder = new Ticket\TicketBuilder($company, $template);
         return $builder->buildFromCashup($cashup);
+    }
+
+    private function getDefaultWitdh()
+    {
+        return AppSettings::get('ticket', 'linelength', 50);
     }
 }

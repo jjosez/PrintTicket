@@ -102,4 +102,9 @@ class Printer
         $this->output .= $line;
         $this->lineBreak();
     }
+
+    public function setWidth($width = 45)
+    {
+        $this->width = $width;
+    }
 }

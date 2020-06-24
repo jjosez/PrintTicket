@@ -16,7 +16,7 @@ class TicketBuilder
     private $company;
     private $template;
     
-    function __construct(Company $company, ?AbstractTemplate $template)
+    function __construct(Company $company, AbstractTemplate $template)
     {
         $this->company = $company;
         $this->template = $template;

@@ -116,7 +116,7 @@ class DefaultDocumentTemplate extends AbstractTemplate
 
         if ($this->footLines) {
             foreach ($this->footLines as $line) {
-                $this->printer->text($line, true, true);
+                $this->printer->bigText($line, true, true);
             }
         }
 

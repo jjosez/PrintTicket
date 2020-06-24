@@ -1,6 +1,6 @@
 {   
     "print-ticket-settings": "Configuracion de tickets",
-    "footer-custom-lines": "Lineas de encabezado",
-    "header-custom-lines" : "Lineas de pie",
+    "footer-custom-lines": "Lineas de pie",
+    "header-custom-lines" : "Lineas de encabezado",
     "common-ticket-settings" : "Configuracion General"
 }
