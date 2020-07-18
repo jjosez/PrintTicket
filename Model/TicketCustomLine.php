@@ -21,11 +21,7 @@ class TicketCustomLine extends Base\ModelClass
             . ' WHERE documento = ' . self::$dataBase->var2str($document) 
             . ' AND posicion = ' . self::$dataBase->var2str($position) . ';';
 
-        if (self::$dataBase->exec($sql)) {
-            return true;
-        }
-
-        return false;
+        return self::$dataBase->exec($sql);
     }
 
     public function getFromDocument($document, $position)

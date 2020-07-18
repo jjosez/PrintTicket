@@ -18,7 +18,7 @@ class Cashup
     private $total;
 
 
-    function __construct(string $code, string $initial, string $spected, string $total, ?DateTime $date)
+    function __construct(string $code, string $initial, string $spected, string $total, DateTime $date = null)
     {
         $this->code = $code;
         $this->initial = $initial;

@@ -2,63 +2,45 @@
 
 namespace FacturaScripts\Plugins\PrintTicket\Lib\Ticket\Template;
 
-use FacturaScripts\Dinamic\Lib\Ticket\Data\Cashup;
 use FacturaScripts\Dinamic\Lib\Ticket\Data\Company;
 use FacturaScripts\Dinamic\Lib\Ticket\Data\Customer;
 use FacturaScripts\Dinamic\Lib\Ticket\Data\Document;
-use FacturaScripts\Dinamic\Lib\Ticket\Template\AbstractTemplate;
 
 /**
  * 
  */
-class DefaultDocumentTemplate extends AbstractTemplate
+class DefaultDocumentTemplate extends DocumentTemplate
 {
-    protected $customer;
-    protected $document;
-    protected $headLines;
-    protected $footLines;
 
-    function __construct($width = '50')
+    public function __construct($width = '50')
     {
         parent::__construct($width);
-
-        $this->headLines = [];
-        $this->footLines = [];
     }
 
-    public function buildDocumentTicket(
+    public function buildTicket(
         Document $document, 
         Customer $customer, 
         Company $company, 
         array $headlines, 
         array $footlines,
-        bool $cut,
-        bool $open
+        bool $cut = true,
+        bool $open = true
     ) : string {
         $this->company = $company;
         $this->customer = $customer;
         $this->document = $document;
         $this->headLines = $headlines;
         $this->footLines = $footlines;
-        
-        ($open) ? $this->printer->open() : null;
 
         $this->buildHead();
         $this->buildMain();
         $this->buildFoot();
 
-        ($cut) ? $this->printer->cut() : null;       
+        $this->printer->lineBreak();
+        $this->openDrawerCommand($open);
+        $this->cutPapperCommand($cut);
 
         return $this->printer->output();
-    }
-
-    public function buildCashupTicket(
-        Cashup $cashup, 
-        Company $company, 
-        bool $cut, 
-        bool $open
-    ) : string {
-        return '';
     }
 
     protected function buildHead()

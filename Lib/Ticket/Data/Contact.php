@@ -12,12 +12,12 @@ class Contact
     protected $address;
     protected $phone;    
 
-    function __construct(string $name, string $vatID, ?string $address, ?string $phone = null)
+    function __construct(string $name, string $vatID, string $address = '', string $phone = '')
     {
         $this->name = $name;
         $this->vatID = $vatID;
         $this->address = $address;
-        $this->phone = $phone ?: '';
+        $this->phone = $phone;
     }
 
     public function getName() : string

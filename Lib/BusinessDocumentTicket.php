@@ -1,32 +1,35 @@
 <?php
 namespace FacturaScripts\Plugins\PrintTicket\Lib;
 
-use DateTime;
 use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Dinamic\Lib\Ticket\Data\Company;
 use FacturaScripts\Dinamic\Lib\Ticket\Data\Customer;
 use FacturaScripts\Dinamic\Lib\Ticket\Data\Document;
+use FacturaScripts\Dinamic\Lib\Ticket\Template\DocumentTemplate;
+use FacturaScripts\Dinamic\Lib\Ticket\Template\DefaultDocumentTemplate;
 use FacturaScripts\Dinamic\Model\TicketCustomLine;
-use FacturaScripts\Plugins\PrintTicket\Lib\Ticket\Template\DefaultDocumentTemplate;
 
 class BusinessDocumentTicket
 {
     private $document;
     private $doctype;
-    private $width;
+    private $template;
 
     /**
      * BusinessDocumentTicket constructor.
      *
      * @param $document
+     * @param DocumentTemplate|null $template
      * @param string $doctype identificador del tipo de documento
      * @param int|null $width numero maximo de caracteres por linea.
      */
-    function __construct($document, $doctype = "general", int $width = null)
+    public function __construct($document, $doctype = "general", int $width = null, DocumentTemplate $template = null)
     {
         $this->document = $document;
         $this->doctype = $doctype;
-        $this->width = (empty($width)) ? $this->getDefaultWitdh() : $width;
+        $width = $width ?: $this->getDefaultWitdh();
+
+        $this->template = $template ?: new DefaultDocumentTemplate($width);
     }
 
     public function getTicket()
@@ -60,29 +63,25 @@ class BusinessDocumentTicket
             $this->document->nombrecliente,
             $this->document->cifnif,
             $this->document->direccion,
-            null
+            ''
         );
 
-        $data = (new TicketCustomLine)->getFromDocument($this->doctype, 'header');
-        $headlines = $this->getCustomLines($data);
-        
-        $data = (new TicketCustomLine)->getFromDocument($this->doctype, 'footer');
-        $footlines = $this->getCustomLines($data);
+        $headlines = $this->getCustomLines('header');
+        $footlines = $this->getCustomLines('footer');
 
-        $template = new DefaultDocumentTemplate($this->width);
-
-        $builder = new Ticket\TicketBuilder($company, $template);
-        return $builder->buildFromDocument($document, $customer, $headlines, $footlines);
+        return $this->template->buildTicket($document, $customer, $company, $headlines, $footlines);
     }
 
-    private function getCustomLines($data)
+    private function getCustomLines(string $position)
     {
-        $lines = [];
+        $data = (new TicketCustomLine)->getFromDocument($this->doctype, $position);
+        $result = [];
+
         foreach ($data as $line) {
             $lines[] = $line->texto;
         }
 
-        return $lines;
+        return $result;
     }
 
     private function getDefaultWitdh()

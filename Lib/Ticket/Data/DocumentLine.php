@@ -51,6 +51,4 @@ class DocumentLine
     {
         return $this->price * $this->quantity;
     }
-
-    
 }

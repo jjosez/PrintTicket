@@ -4,52 +4,16 @@ namespace FacturaScripts\Plugins\PrintTicket\Lib\Ticket\Template;
 
 use FacturaScripts\Dinamic\Lib\Ticket\Data\Cashup;
 use FacturaScripts\Dinamic\Lib\Ticket\Data\Company;
-use FacturaScripts\Dinamic\Lib\Ticket\Data\Customer;
-use FacturaScripts\Dinamic\Lib\Ticket\Data\Document;
-use FacturaScripts\Dinamic\Lib\Ticket\Template\AbstractTemplate;
 
 /**
  * 
  */
-class DefaultCashupTemplate extends AbstractTemplate
+class DefaultCashupTemplate extends CashupTemplate
 {
-    protected $cashup;
 
-    function __construct($width = '50')
+    public function __construct($width = '50')
     {
         parent::__construct($width);
-    }
-
-    public function buildDocumentTicket(
-        Document $document, 
-        Customer $customer, 
-        Company $company, 
-        array $headlines, 
-        array $footlines,
-        bool $cut,
-        bool $open
-    ) : string {
-
-        return '';
-    }
-
-    public function buildCashupTicket(
-        Cashup $cashup, 
-        Company $company, 
-        bool $cut, 
-        bool $open
-    ) : string {
-        $this->company = $company;
-        $this->cashup = $cashup;
-
-        ($open) ? $this->printer->open() : null;
-
-        $this->buildHead();
-        $this->buildMain();
-
-        ($cut) ? $this->printer->cut() : null;
-
-        return $this->printer->output();
     }
 
     protected function buildHead()
@@ -86,5 +50,20 @@ class DefaultCashupTemplate extends AbstractTemplate
         $this->printer->lineSplitter('=');          
         $this->printer->columnText('TOTAL ESPERADO', $this->cashup->getSpectedTotal());
         $this->printer->columnText('TOTAL CONTADO:', $this->cashup->getTotal());
+    }
+
+    public function buildTicket(Cashup $cashup, Company $company, bool $cut = true, bool $open = true): string
+    {
+        $this->company = $company;
+        $this->cashup = $cashup;
+
+        $this->buildHead();
+        $this->buildMain();
+
+        $this->printer->lineBreak();
+        $this->openDrawerCommand($open);
+        $this->cutPapperCommand($cut);
+
+        return $this->printer->output();
     }
 }

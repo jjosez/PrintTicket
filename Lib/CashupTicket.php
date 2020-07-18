@@ -1,23 +1,24 @@
 <?php
 namespace FacturaScripts\Plugins\PrintTicket\Lib;
 
-use DateTime;
 use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Dinamic\Lib\Ticket\Data\Cashup;
 use FacturaScripts\Dinamic\Lib\Ticket\Data\Company;
-use FacturaScripts\Plugins\PrintTicket\Lib\Ticket\Template\DefaultCashupTemplate;
+use FacturaScripts\Dinamic\Lib\Ticket\Template\DefaultCashupTemplate;
 
 class CashupTicket
 {
     private $company;
     private $session;
-    private $width;
+    private $template;
 
-    function __construct($session, $company, float $width = null)
+    public function __construct($session, $company, int $width = null, CashupTemplate $template = null)
     {
         $this->company = $company;
         $this->session = $session;
-        $this->width = (empty($width)) ? $this->getDefaultWitdh() : $width;
+        $width = $width ?: $this->getDefaultWitdh();
+
+        $this->template = $template ?: new DefaultCashupTemplate($width);
     }
 
     public function getTicket()
@@ -44,10 +45,7 @@ class CashupTicket
             );
         }
 
-        $template = new DefaultCashupTemplate($this->width);
-
-        $builder = new Ticket\TicketBuilder($company, $template);
-        return $builder->buildFromCashup($cashup);
+        return $this->template->buildTicket($cashup, $company);
     }
 
     private function getDefaultWitdh()
