@@ -6,8 +6,7 @@ function printTicketDialog() {
     var data = {
         code: code,
         documento: 'FacturaCliente'
-    }
-
+    };
     $.ajax({
         type: 'POST',
         url: 'PrintTicket',
@@ -19,7 +18,7 @@ function printTicketDialog() {
                 backdrop: true,
             })
         }
-    })
+    });
 }
 $(function() {
     if (!code) {
