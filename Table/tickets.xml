@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <table>
     <column>
+        <name>abrircajon</name>
+        <type>boolean</type>
+        <null>NO</null>
+    </column>
+    <column>
         <name>coddocument</name>
         <type>character varying(30)</type>
+        <null>NO</null>
+    </column>
+    <column>
+        <name>cortarpapel</name>
+        <type>boolean</type>
         <null>NO</null>
     </column>
     <column>

@@ -9,7 +9,6 @@ use FacturaScripts\Dinamic\Lib\Ticket\ESCPOS\Printer;
  */
 abstract class BaseTicketTemplate
 {
-    protected $company;
     protected $printer;
 
     public function __construct($width)

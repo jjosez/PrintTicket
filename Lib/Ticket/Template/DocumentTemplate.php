@@ -2,16 +2,13 @@
 
 namespace FacturaScripts\Plugins\PrintTicket\Lib\Ticket\Template;
 
-use FacturaScripts\Dinamic\Lib\Ticket\Data\Company;
-use FacturaScripts\Dinamic\Lib\Ticket\Data\Customer;
-use FacturaScripts\Dinamic\Lib\Ticket\Data\Document;
+use FacturaScripts\Core\Model\Base\BusinessDocument;
 
 /**
  *
  */
 abstract class DocumentTemplate extends BaseTicketTemplate
 {
-    protected $customer;
     protected $document;
     protected $headLines;
     protected $footLines;
@@ -25,9 +22,7 @@ abstract class DocumentTemplate extends BaseTicketTemplate
     }
 
     abstract public function buildTicket(
-        Document $document,
-        Customer $customer,
-        Company $company,
+        BusinessDocument $document,
         array $headlines,
         array $footlines,
         bool $cut = true,

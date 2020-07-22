@@ -35,6 +35,23 @@ class TicketCustomLine extends Base\ModelClass
         return $this->all($where);
     }
 
+    public static function rawFromDocument($document, $position)
+    {
+        $result = [];
+        $where = [
+            new DataBaseWhere('documento', $document),
+            new DataBaseWhere('documento', 'general', '=', 'OR'),
+            new DataBaseWhere('posicion', $position, '='),
+        ];
+
+        $sql = 'SELECT texto FROM ' . static::tableName() . DataBaseWhere::getSQLWhere($where);
+        foreach (self::$dataBase->selectLimit($sql) as $row) {
+            $result[] = $row['texto'];
+        }
+
+        return $result;
+    }
+
     public static function primaryColumn()
     {
         return 'idlinea';

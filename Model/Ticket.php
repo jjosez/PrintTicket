@@ -7,8 +7,17 @@ class Ticket extends Base\ModelClass
 {
     use Base\ModelTrait;
 
+    public $abrircajon;
     public $coddocument;
+    public $cortarpapel;
     public $name;
+
+    public function clear()
+    {
+        parent::clear();
+        $this->abrircajon = false;
+        $this->cortarpapel = false;
+    }
 
     public static function primaryColumn()
     {
