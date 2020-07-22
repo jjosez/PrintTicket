@@ -20,7 +20,7 @@ class DefaultCashupTemplate extends CashupTemplate
     {
         $this->printer->lineBreak();
 
-        $this->printer->lineSplitter();
+        $this->printer->lineSplitter('=');
         $this->printer->text($this->company->getName(), true, true);
         $this->printer->bigText($this->company->getAddress(), true, true);
 
@@ -34,22 +34,22 @@ class DefaultCashupTemplate extends CashupTemplate
 
     protected function buildMain()
     {
-        $this->printer->text($this->cashup->getDate(), true, true);
+        $this->printer->columnText('CIERRE', $this->cashup->getDate());
         $this->printer->lineSplitter('=');
-
-        $this->printer->columnText('DOCUMENTO','TOTAL');
-        $this->printer->lineSplitter('=');
-
-        foreach ($this->cashup->getOperations() as $operation) {
-            $this->printer->text($operation->getId(), true);
-            $this->printer->columnText($operation->getCode(), $operation->getAmount());
-        }
 
         $this->printer->columnText('SALDO INICIAL', $this->cashup->getInitialAmount());
+        $this->printer->lineSplitter();
 
-        $this->printer->lineSplitter('=');          
+        $this->printer->text('RESUMEN DE PAGOS', true, true);
+        $this->printer->lineBreak();
+
+        foreach ($this->cashup->getPayments() as $payment) {
+            $this->printer->columnText(strtoupper($payment->getMethod()), $payment->getAmount());
+        }
+
+        $this->printer->lineSplitter('=');
         $this->printer->columnText('TOTAL ESPERADO', $this->cashup->getSpectedTotal());
-        $this->printer->columnText('TOTAL CONTADO:', $this->cashup->getTotal());
+        $this->printer->columnText('TOTAL CONTADO', $this->cashup->getTotal());
     }
 
     public function buildTicket(Cashup $cashup, Company $company, bool $cut = true, bool $open = true): string
