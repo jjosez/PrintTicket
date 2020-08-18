@@ -67,24 +67,6 @@ class PrintTicket extends Controller
 
         if (false === $document) return;
 
-        $print = new BusinessDocumentTicket($document);
-
-        $ticket = new Ticket();
-        $ticket->coddocument = $this->document = $document->modelClassName();
-        $ticket->text = $print->getTicket();
-
-        if (!$ticket->save()) {
-            echo 'Error al guardar el ticket';
-        }
-    }
-
-    protected function savePrintJob2($modelName, $code)
-    {
-        $className = self::MODEL_NAMESPACE . $modelName;
-        $document = (new $className)->get($code);
-
-        if (false === $document) return;
-
         $businessTicket = new BusinessDocumentTicket($document, $modelName);
 
         $ticket = new Ticket();

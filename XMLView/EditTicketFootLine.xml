@@ -27,13 +27,23 @@
             <column name="idlinea" title="id" display="none" order="100">
                 <widget type="text" fieldname="idlinea" readonly="true" />
             </column>
-            <column name="documento" display="none" order="110">
-                <widget type="text" fieldname="documento" />
+            <column name="doc-type" numcolumns="3" order="110">
+                <widget type="select" fieldname="documento" required="true" translate="true">
+                    <values title="general">general</values>
+                    <values title="customer-estimation">PresupuestoCliente</values>
+                    <values title="customer-order">PedidoCliente</values>
+                    <values title="customer-delivery-note">AlbaranCliente</values>
+                    <values title="customer-invoice">FacturaCliente</values>
+                    <values title="supplier-estimation">PresupuestoProveedor</values>
+                    <values title="supplier-order">PedidoProveedor</values>
+                    <values title="supplier-delivery-note">AlbaranProveedor</values>
+                    <values title="supplier-invoice">FacturaProveedor</values>
+                </widget>
             </column>
             <column name="ubicacion" display="none" order="120">
                 <widget type="text" fieldname="posicion" maxlength="30" />
             </column>
-            <column name="message" title="message" numcolumns="12" order="130">
+            <column name="message" title="message" numcolumns="9" order="130">
                 <widget type="text" fieldname="texto" maxlength="200" />
             </column>
         </group>
