@@ -19,6 +19,12 @@ class Ticket extends Base\ModelClass
         $this->cortarpapel = false;
     }
 
+    public function install()
+    {
+        new TicketCustomLine();
+        return parent::install();
+    }
+
     public static function primaryColumn()
     {
         return 'coddocument';
