@@ -3,6 +3,7 @@
 namespace FacturaScripts\Plugins\PrintTicket\Lib\Ticket\Template;
 
 use FacturaScripts\Core\Model\Base\BusinessDocument;
+use FacturaScripts\Dinamic\Model\Empresa;
 
 /**
  *
@@ -13,9 +14,9 @@ abstract class DocumentTemplate extends BaseTicketTemplate
     protected $headLines;
     protected $footLines;
 
-    public function __construct($width = '50')
+    public function __construct(Empresa $empresa, int $width)
     {
-        parent::__construct($width);
+        parent::__construct($empresa, $width);
 
         $this->headLines = [];
         $this->footLines = [];

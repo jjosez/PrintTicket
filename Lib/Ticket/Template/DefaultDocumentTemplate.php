@@ -10,7 +10,7 @@ use FacturaScripts\Core\Model\Base\BusinessDocument;
 class DefaultDocumentTemplate extends DocumentTemplate
 {
 
-    public function __construct($width = '50')
+    public function __construct($width)
     {
         parent::__construct($width);
     }

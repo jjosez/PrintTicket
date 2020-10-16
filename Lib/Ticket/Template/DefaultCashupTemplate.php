@@ -2,8 +2,9 @@
 
 namespace FacturaScripts\Plugins\PrintTicket\Lib\Ticket\Template;
 
+
 use FacturaScripts\Dinamic\Lib\Ticket\Data\Cashup;
-use FacturaScripts\Dinamic\Lib\Ticket\Data\Company;
+use FacturaScripts\Dinamic\Model\Empresa;
 
 /**
  * 
@@ -11,9 +12,9 @@ use FacturaScripts\Dinamic\Lib\Ticket\Data\Company;
 class DefaultCashupTemplate extends CashupTemplate
 {
 
-    public function __construct($width = '50')
+    public function __construct(Empresa $empresa, int $width)
     {
-        parent::__construct($width);
+        parent::__construct($empresa, $width);
     }
 
     protected function buildHead()
@@ -21,14 +22,17 @@ class DefaultCashupTemplate extends CashupTemplate
         $this->printer->lineBreak();
 
         $this->printer->lineSplitter('=');
-        $this->printer->text($this->company->getName(), true, true);
-        $this->printer->bigText($this->company->getAddress(), true, true);
+        $this->printer->text($this->empresa->nombrecorto, true, true);
+        $this->printer->bigText($this->empresa->direccion, true, true);
 
-        if ($this->company->getPhone()) {
-            $this->printer->text('TEL: ' . $this->company->getPhone(), true, true);
+        if ($this->empresa->telefono1) {
+            $this->printer->text('TEL: ' . $this->empresa->telefono1, true, true);
+        }
+        if ($this->empresa->telefono2) {
+            $this->printer->text('TEL: ' . $this->empresa->telefono2, true, true);
         }
 
-        $this->printer->text($this->company->getVatID(), true, true);
+        $this->printer->text($this->empresa->cifnif, true, true);
         $this->printer->LineSplitter('=');
     }
 
@@ -52,9 +56,8 @@ class DefaultCashupTemplate extends CashupTemplate
         $this->printer->columnText('TOTAL CONTADO', $this->cashup->getTotal());
     }
 
-    public function buildTicket(Cashup $cashup, Company $company, bool $cut = true, bool $open = true): string
+    public function buildTicket(Cashup $cashup, bool $cut = true, bool $open = true): string
     {
-        $this->company = $company;
         $this->cashup = $cashup;
 
         $this->buildHead();

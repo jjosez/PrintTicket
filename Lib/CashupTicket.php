@@ -1,34 +1,23 @@
 <?php
 namespace FacturaScripts\Plugins\PrintTicket\Lib;
 
-use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Dinamic\Lib\Ticket\Data\Cashup;
-use FacturaScripts\Dinamic\Lib\Ticket\Data\Company;
 use FacturaScripts\Dinamic\Lib\Ticket\Template\DefaultCashupTemplate;
+use FacturaScripts\Dinamic\Model\Empresa;
 
 class CashupTicket
 {
-    private $company;
     private $session;
     private $template;
 
-    public function __construct($session, $company, int $width = null, CashupTemplate $template = null)
+    public function __construct($session, Empresa $empresa, int $width = null, CashupTemplate $template = null)
     {
-        $this->company = $company;
         $this->session = $session;
-        $width = $width ?: $this->getDefaultWitdh();
-
-        $this->template = $template ?: new DefaultCashupTemplate($width);
+        $this->template = $template ?: new DefaultCashupTemplate($empresa, $width);
     }
 
     public function getTicket()
     {
-        $company = new Company(
-            $this->company->nombrecorto,
-            $this->company->cifnif,
-            $this->company->direccion
-        );
-
         $cashup = new Cashup(
             $this->session->idsesion,
             $this->session->saldoinicial,
@@ -45,11 +34,6 @@ class CashupTicket
             );
         }
 
-        return $this->template->buildTicket($cashup, $company);
-    }
-
-    private function getDefaultWitdh()
-    {
-        return AppSettings::get('ticket', 'linelength', 50);
+        return $this->template->buildTicket($cashup);
     }
 }

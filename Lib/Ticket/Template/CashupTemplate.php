@@ -3,25 +3,22 @@
 namespace FacturaScripts\Plugins\PrintTicket\Lib\Ticket\Template;
 
 use FacturaScripts\Dinamic\Lib\Ticket\Data\Cashup;
-use FacturaScripts\Dinamic\Lib\Ticket\Data\Company;
+use FacturaScripts\Dinamic\Model\Empresa;
 
 /**
  * 
  */
-abstract class CashupTemplate extends BaseTicketTemplate
+class CashupTemplate extends BaseTicketTemplate
 {
     protected $cashup;
-    protected $company;
 
-    public function __construct($width)
+    public function __construct(Empresa $empresa, int $width)
     {
-        parent::__construct($width);
+        parent::__construct($empresa, $width);
     }
 
-    abstract public function buildTicket(
-        Cashup $cashup,
-        Company $company,
-        bool $cut,
-        bool $open
-    ) : string;
+    protected function buildTicket(Cashup $cashup, bool $cut, bool $open) : string
+    {
+
+    }
 }
