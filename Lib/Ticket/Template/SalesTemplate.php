@@ -3,38 +3,36 @@
 namespace FacturaScripts\Plugins\PrintTicket\Lib\Ticket\Template;
 
 use FacturaScripts\Core\Model\Base\BusinessDocument;
+use FacturaScripts\Dinamic\Model\Empresa;
 
 /**
- * 
+ *
  */
-class DefaultDocumentTemplate extends DocumentTemplate
+class SalesTemplate extends BaseTicketTemplate
 {
+    protected $document;
+    protected $headLines;
+    protected $footLines;
 
-    public function __construct($width)
+    public function __construct(Empresa $empresa, $width)
     {
-        parent::__construct($width);
+        parent::__construct($empresa, $width);
+
+        $this->headLines = [];
+        $this->footLines = [];
     }
 
-    public function buildTicket(
-        BusinessDocument $document,
-        array $headlines, 
-        array $footlines,
-        bool $cut = true,
-        bool $open = true
-    ) : string {
-        $this->document = $document;
-        $this->headLines = $headlines;
-        $this->footLines = $footlines;
+    protected function buildFoot()
+    {
+        $this->printer->lineBreak(2);
 
-        $this->buildHead();
-        $this->buildMain();
-        $this->buildFoot();
+        if ($this->footLines) {
+            foreach ($this->footLines as $line) {
+                $this->printer->bigText($line, true, true);
+            }
+        }
 
-        $this->printer->lineBreak();
-        $this->openDrawerCommand($open);
-        $this->cutPapperCommand($cut);
-
-        return $this->printer->output();
+        $this->printer->barcode($this->document->codigo);
     }
 
     protected function buildHead()
@@ -57,7 +55,7 @@ class DefaultDocumentTemplate extends DocumentTemplate
             foreach ($this->headLines as $line) {
                 $this->printer->text($line, true, true);
             }
-        }  
+        }
     }
 
     protected function buildMain()
@@ -88,16 +86,20 @@ class DefaultDocumentTemplate extends DocumentTemplate
         $this->printer->columnText('TOTAL DEL DOCUMENTO:', $this->document->total);
     }
 
-    protected function buildFoot()
+    public function buildTicket(BusinessDocument $document, array $headlines, array $footlines, bool $cut = true, bool $open = true) : string
     {
-        $this->printer->lineBreak(2);
+        $this->document = $document;
+        $this->headLines = $headlines;
+        $this->footLines = $footlines;
 
-        if ($this->footLines) {
-            foreach ($this->footLines as $line) {
-                $this->printer->bigText($line, true, true);
-            }
-        }
+        $this->buildHead();
+        $this->buildMain();
+        $this->buildFoot();
 
-        $this->printer->barcode($this->document->codigo);
+        $this->printer->lineBreak();
+        $this->openDrawerCommand($open);
+        $this->cutPapperCommand($cut);
+
+        return $this->printer->output();
     }
 }

@@ -1,33 +1,30 @@
 <?php
 namespace FacturaScripts\Plugins\PrintTicket\Lib;
 
-use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Model\Base\BusinessDocument;
-use FacturaScripts\Dinamic\Lib\Ticket\Template\DocumentTemplate;
-use FacturaScripts\Dinamic\Lib\Ticket\Template\DefaultDocumentTemplate;
+use FacturaScripts\Dinamic\Lib\Ticket\Template\SalesTemplate;
 use FacturaScripts\Dinamic\Model\TicketCustomLine;
 
-class BusinessDocumentTicket
+class SalesDocumentTicket
 {
     private $document;
     private $doctype;
     private $template;
 
     /**
-     * BusinessDocumentTicket constructor.
+     * SalesDocumentTicket constructor.
      *
      * @param $document
-     * @param DocumentTemplate|null $template
+     * @param SalesTemplate|null $template
      * @param string $doctype identificador del tipo de documento
      * @param int|null $width numero maximo de caracteres por linea.
      */
-    public function __construct(BusinessDocument $document, $doctype = "general", int $width = null, DocumentTemplate $template = null)
+    public function __construct(BusinessDocument $document, $doctype = "general", $width = null, SalesTemplate $template = null)
     {
         $this->document = $document;
         $this->doctype = $doctype;
-        $width = $width ?: $this->getDefaultWitdh();
 
-        $this->template = $template ?: new DefaultDocumentTemplate($width);
+        $this->template = $template ?: new SalesTemplate($document->getCompany(), $width);
     }
 
     public function getTicket()
@@ -41,10 +38,5 @@ class BusinessDocumentTicket
     private function getCustomLines(string $position)
     {
         return TicketCustomLine::rawFromDocument($this->doctype, $position);
-    }
-
-    private function getDefaultWitdh()
-    {
-        return AppSettings::get('ticket', 'linelength', 50);
     }
 }

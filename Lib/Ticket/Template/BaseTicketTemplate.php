@@ -15,7 +15,7 @@ abstract class BaseTicketTemplate
     protected $empresa;
     protected $printer;
 
-    public function __construct(Empresa $empresa, int $width)
+    public function __construct(Empresa $empresa, $width = null)
     {
         $this->empresa = $empresa ?: new Empresa();
         $this->printer = $width ? new Printer($width) : new Printer($this->defaultWitdh());

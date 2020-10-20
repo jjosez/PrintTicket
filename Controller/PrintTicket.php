@@ -19,7 +19,7 @@
 namespace FacturaScripts\Plugins\PrintTicket\Controller;
 
 use FacturaScripts\Core\Base\Controller;
-use FacturaScripts\Dinamic\Lib\BusinessDocumentTicket;
+use FacturaScripts\Dinamic\Lib\SalesDocumentTicket;
 use FacturaScripts\Dinamic\Model\Ticket;
 
 /**
@@ -67,7 +67,7 @@ class PrintTicket extends Controller
 
         if (false === $document) return;
 
-        $businessTicket = new BusinessDocumentTicket($document, $modelName);
+        $businessTicket = new SalesDocumentTicket($document, $modelName);
 
         $ticket = new Ticket();
         $ticket->coddocument = $this->document = $document->modelClassName();

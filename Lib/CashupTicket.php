@@ -2,7 +2,7 @@
 namespace FacturaScripts\Plugins\PrintTicket\Lib;
 
 use FacturaScripts\Dinamic\Lib\Ticket\Data\Cashup;
-use FacturaScripts\Dinamic\Lib\Ticket\Template\DefaultCashupTemplate;
+use FacturaScripts\Dinamic\Lib\Ticket\Template\CashupTemplate;
 use FacturaScripts\Dinamic\Model\Empresa;
 
 class CashupTicket
@@ -10,10 +10,10 @@ class CashupTicket
     private $session;
     private $template;
 
-    public function __construct($session, Empresa $empresa, int $width = null, CashupTemplate $template = null)
+    public function __construct($session, Empresa $empresa, $width = null, CashupTemplate $template = null)
     {
         $this->session = $session;
-        $this->template = $template ?: new DefaultCashupTemplate($empresa, $width);
+        $this->template = $template ?: new CashupTemplate($empresa, $width);
     }
 
     public function getTicket()
