@@ -2,7 +2,7 @@
 
 namespace FacturaScripts\Plugins\PrintTicket\Lib\Ticket\Template;
 
-use _HumbugBox3ab8cff0fda0\___PHPSTORM_HELPERS\this;
+use FacturaScripts\Core\Base\DivisaTools;
 use FacturaScripts\Core\Model\Base\BusinessDocument;
 use FacturaScripts\Dinamic\Model\Empresa;
 
@@ -69,36 +69,36 @@ class SalesTemplate extends BaseTicketTemplate
         $this->printer->lineSplitter('=');
 
         $this->printer->text('ARTICULO');
-        $columnas = $this->printer->columnText(4, 'CANTIDAD');
-        $columnas .= $this->printer->columnText(4, 'P.U.');
-        $columnas .= $this->printer->columnText(4, 'IMPORTE');
-        $columnas .= $this->printer->columnText(4, 'DESCUENTO');
+        $columnas = $this->printer->columnText(3, 'CANTIDAD');
+        $columnas .= $this->printer->columnText(3, 'UNITARIO');
+        $columnas .= $this->printer->columnText(3, 'IMPORTE');
         $this->printer->text($columnas);
         $this->printer->lineSplitter('=');
 
-        //$totaliva = 0.0;
+        $divisaTool = new DivisaTools();
+        $divisaTool->findDivisa($this->document);
+
         foreach ($this->document->getLines() as $line) {
             $this->printer->text("$line->referencia - $line->descripcion");
-
-            $desglose = $this->printer->columnText(4, $line->cantidad);
-            $desglose .= $this->printer->columnText(4, $line->pvpunitario);
-            $desglose .= $this->printer->columnText(4, $line->pvpsindto);
-
-            $descuento = $line->cantidad * ($line->pvpunitario - ($line->pvpunitario * $line->getEUDiscount()));
-            $desglose .= $this->printer->columnText(4, $descuento);
+            $desglose = $this->printer->columnText(3, $line->cantidad);
+            $desglose .= $this->printer->columnText(3, $divisaTool::format($line->pvpunitario));
+            $desglose .= $this->printer->columnText(3, $divisaTool::format($line->pvpsindto));
             $this->printer->text($desglose);
 
-            $this->printer->keyValueText('Base:', $line->pvptotal);
-            $this->printer->keyValueText("Impuesto $line->iva%:", $line->pvptotal * $line->iva / 100);
-            $this->printer->keyValueText('Importe:', $line->pvptotal);
-            $this->printer->lineBreak();
+            $descuento = $line->pvpsindto - ($line->pvpsindto * $line->getEUDiscount());
+            $this->printer->keyValueText('Descuento:', '- ' . $divisaTool::format($descuento));
 
-            //$totaliva += $line->pvptotal * $line->iva / 100;
+            $impuestoLinea = $line->pvptotal * $line->iva / 100;
+            $this->printer->keyValueText("Impuesto $line->iva%:", '+ ' . $divisaTool::format($impuestoLinea));
+            $this->printer->keyValueText('Total linea:', $divisaTool::format($line->pvptotal + $impuestoLinea));
+
+            $this->printer->lineBreak();
         }
 
         $this->printer->lineSplitter('=');
-        $this->printer->keyValueText('IVA', $this->document->totaliva);
-        $this->printer->keyValueText('TOTAL DEL DOCUMENTO:', $this->document->total);
+        $this->printer->keyValueText('BASE', $divisaTool::format($this->document->neto));
+        $this->printer->keyValueText('IVA', $divisaTool::format($this->document->totaliva));
+        $this->printer->keyValueText('TOTAL DEL DOCUMENTO:', $divisaTool::format($this->document->total));
     }
 
     public function buildTicket(BusinessDocument $document, array $headlines, array $footlines, bool $cut = true, bool $open = true) : string

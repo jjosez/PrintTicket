@@ -54,8 +54,7 @@ class Printer
 
     public function columnText(int $cols, string $text, string $align = '')
     {
-        $width = $this->width / $cols;
-
+        $width = intdiv($this->width, $cols);
         return sprintf('%' . $align . $width . 's', $text);
     }
 
