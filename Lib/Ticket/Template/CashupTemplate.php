@@ -38,22 +38,22 @@ class CashupTemplate extends BaseTicketTemplate
 
     protected function buildMain()
     {
-        $this->printer->columnText('CIERRE', $this->cashup->getDate());
+        $this->printer->keyValueText('CIERRE', $this->cashup->getDate());
         $this->printer->lineSplitter('=');
 
-        $this->printer->columnText('SALDO INICIAL', $this->cashup->getInitialAmount());
+        $this->printer->keyValueText('SALDO INICIAL', $this->cashup->getInitialAmount());
         $this->printer->lineSplitter();
 
         $this->printer->text('RESUMEN DE PAGOS', true, true);
         $this->printer->lineBreak();
 
         foreach ($this->cashup->getPayments() as $payment) {
-            $this->printer->columnText(strtoupper($payment->getMethod()), $payment->getAmount());
+            $this->printer->keyValueText(strtoupper($payment->getMethod()), $payment->getAmount());
         }
 
         $this->printer->lineSplitter('=');
-        $this->printer->columnText('TOTAL ESPERADO', $this->cashup->getSpectedTotal());
-        $this->printer->columnText('TOTAL CONTADO', $this->cashup->getTotal());
+        $this->printer->keyValueText('TOTAL ESPERADO', $this->cashup->getSpectedTotal());
+        $this->printer->keyValueText('TOTAL CONTADO', $this->cashup->getTotal());
     }
 
     public function buildTicket(Cashup $cashup, bool $cut = true, bool $open = true): string

@@ -2,6 +2,8 @@
 
 namespace FacturaScripts\Plugins\PrintTicket\Lib\Ticket\ESCPOS;
 
+use _HumbugBox3ab8cff0fda0\___PHPSTORM_HELPERS\this;
+
 /**
  * 
  */
@@ -50,7 +52,14 @@ class Printer
         } 
     }
 
-    public function columnText($label, $value, $align = '')
+    public function columnText(int $cols, string $text, string $align = '')
+    {
+        $width = $this->width / $cols;
+
+        return sprintf('%' . $align . $width . 's', $text);
+    }
+
+    public function keyValueText(string $label, string $value, string $align = '')
     {
         $text = $label;
         $width = $this->width - strlen($label);
@@ -101,6 +110,11 @@ class Printer
 
         $this->output .= $line;
         $this->lineBreak();
+    }
+
+    public function getWidth()
+    {
+        return $this->width;
     }
 
     public function setWidth($width = 45)

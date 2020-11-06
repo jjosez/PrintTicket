@@ -68,31 +68,37 @@ class SalesTemplate extends BaseTicketTemplate
         $this->printer->text('CLIENTE: ' . $this->document->nombrecliente);
         $this->printer->lineSplitter('=');
 
-        $this->printer->columnText('CANTIDAD', 'ARTICULO');
+        $this->printer->text('ARTICULO');
+        $columnas = $this->printer->columnText(4, 'CANTIDAD');
+        $columnas .= $this->printer->columnText(4, 'P.U.');
+        $columnas .= $this->printer->columnText(4, 'IMPORTE');
+        $columnas .= $this->printer->columnText(4, 'DESCUENTO');
+        $this->printer->text($columnas);
         $this->printer->lineSplitter('=');
 
         //$totaliva = 0.0;
         foreach ($this->document->getLines() as $line) {
-            $producto = $line->cantidad . ' x ' . $line->referencia . ' - ' . $line->descripcion;
-            //$this->printer->columnText($producto, $line->pvpunitario);
-            $this->printer->text($producto);
-            //$this->printer->columnText($line->cantidad, $producto);
+            $this->printer->text("$line->referencia - $line->descripcion");
 
-            $this->printer->columnText('P. Unitario:', $line->pvpunitario);
-            $this->printer->columnText('Impuesto:', $line->iva);
+            $desglose = $this->printer->columnText(4, $line->cantidad);
+            $desglose .= $this->printer->columnText(4, $line->pvpunitario);
+            $desglose .= $this->printer->columnText(4, $line->pvpsindto);
 
-            $descuento = $line->pvpunitario - ($line->pvpunitario * $line->getEUDiscount());
-            $this->printer->columnText('Descuento:', $descuento);
-            $this->printer->columnText('Importe:', $line->pvpsindto);
-            $this->printer->columnText('Importe:', $line->pvptotal);
+            $descuento = $line->cantidad * ($line->pvpunitario - ($line->pvpunitario * $line->getEUDiscount()));
+            $desglose .= $this->printer->columnText(4, $descuento);
+            $this->printer->text($desglose);
+
+            $this->printer->keyValueText('Base:', $line->pvptotal);
+            $this->printer->keyValueText("Impuesto $line->iva%:", $line->pvptotal * $line->iva / 100);
+            $this->printer->keyValueText('Importe:', $line->pvptotal);
             $this->printer->lineBreak();
 
             //$totaliva += $line->pvptotal * $line->iva / 100;
         }
 
         $this->printer->lineSplitter('=');
-        $this->printer->columnText('IVA', $this->document->totaliva);
-        $this->printer->columnText('TOTAL DEL DOCUMENTO:', $this->document->total);
+        $this->printer->keyValueText('IVA', $this->document->totaliva);
+        $this->printer->keyValueText('TOTAL DEL DOCUMENTO:', $this->document->total);
     }
 
     public function buildTicket(BusinessDocument $document, array $headlines, array $footlines, bool $cut = true, bool $open = true) : string
