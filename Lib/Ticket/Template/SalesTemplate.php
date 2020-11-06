@@ -2,6 +2,7 @@
 
 namespace FacturaScripts\Plugins\PrintTicket\Lib\Ticket\Template;
 
+use _HumbugBox3ab8cff0fda0\___PHPSTORM_HELPERS\this;
 use FacturaScripts\Core\Model\Base\BusinessDocument;
 use FacturaScripts\Dinamic\Model\Empresa;
 
@@ -67,16 +68,24 @@ class SalesTemplate extends BaseTicketTemplate
         $this->printer->text('CLIENTE: ' . $this->document->nombrecliente);
         $this->printer->lineSplitter('=');
 
-        $this->printer->columnText('REFERENCIA', 'CANTIDAD');
+        $this->printer->columnText('CANTIDAD', 'ARTICULO');
         $this->printer->lineSplitter('=');
 
         //$totaliva = 0.0;
         foreach ($this->document->getLines() as $line) {
-            $this->printer->columnText($line->referencia, $line->cantidad);
-            $this->printer->text($line->descripcion);
+            $producto = $line->cantidad . ' x ' . $line->referencia . ' - ' . $line->descripcion;
+            //$this->printer->columnText($producto, $line->pvpunitario);
+            $this->printer->text($producto);
+            //$this->printer->columnText($line->cantidad, $producto);
 
-            $this->printer->columnText('PVP:', $line->pvpunitario);
-            $this->printer->columnText('IMPORTE:', $line->pvptotal);
+            $this->printer->columnText('P. Unitario:', $line->pvpunitario);
+            $this->printer->columnText('Impuesto:', $line->iva);
+
+            $descuento = $line->pvpunitario - ($line->pvpunitario * $line->getEUDiscount());
+            $this->printer->columnText('Descuento:', $descuento);
+            $this->printer->columnText('Importe:', $line->pvpsindto);
+            $this->printer->columnText('Importe:', $line->pvptotal);
+            $this->printer->lineBreak();
 
             //$totaliva += $line->pvptotal * $line->iva / 100;
         }

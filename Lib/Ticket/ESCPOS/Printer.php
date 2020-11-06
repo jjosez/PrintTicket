@@ -65,10 +65,10 @@ class Printer
     public function barcode(string $text)
     {
         $barcode = '';
-        $barcode .= chr(27) . chr(97) . chr(49);  #justification n=0,48 left n=2,49 center n=3,50 right
-        $barcode .= chr(29) . chr(104) . chr(70); #barcode height in dots n=100, 1 < n < 255
-        $barcode .= chr(29) . chr(119) . chr(2);  #barcode width multiplier n=1, n=2,
-        $barcode .= chr(29) . chr(72) . chr(50);  #barcode HRI position n=1,49 above n=2,50 below
+        $barcode .= chr(27) . chr(97) . chr(49);  // justification n=0,48 left n=2,49 center n=3,50 right
+        $barcode .= chr(29) . chr(104) . chr(70); // barcode height in dots n=100, 1 < n < 255
+        $barcode .= chr(29) . chr(119) . chr(2);  // barcode width multiplier n=1, n=2,
+        $barcode .= chr(29) . chr(72) . chr(50);  // barcode HRI position n=1,49 above n=2,50 below
         $barcode .= chr(29) . chr(107) . chr(4) . $text . chr(0);
         $this->output .= $barcode;
     }
