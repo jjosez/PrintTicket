@@ -21,6 +21,8 @@ namespace FacturaScripts\Plugins\PrintTicket\Controller;
 use FacturaScripts\Core\Base\Controller;
 use FacturaScripts\Dinamic\Lib\SalesDocumentTicket;
 use FacturaScripts\Dinamic\Model\Ticket;
+use FacturaScripts\Plugins\PrintTicket\Lib\CustomerServiceTicket;
+use FacturaScripts\Plugins\Servicios\Model\ServicioAT;
 
 /**
  * Controller to generate a receipt from BusinessDocument Model.
@@ -57,7 +59,11 @@ class PrintTicket extends Controller
             return;
         }
 
-        $this->savePrintJob($modelName, $code);
+        if ('Servicio' === $modelName) {
+            $this->saveServicePrintJob($code);
+        } else {
+            $this->savePrintJob($modelName, $code);
+        }
     }
 
     protected function savePrintJob($modelName, $code)
@@ -71,6 +77,23 @@ class PrintTicket extends Controller
 
         $ticket = new Ticket();
         $ticket->coddocument = $this->document = $document->modelClassName();
+        $ticket->text = $businessTicket->getTicket();
+
+        if (!$ticket->save()) {
+            echo 'Error al guardar el ticket';
+        }
+    }
+
+    protected function saveServicePrintJob($code)
+    {
+        $document = (new ServicioAT())->get($code);
+
+        if (false === $document) return;
+
+        $businessTicket = new CustomerServiceTicket($document);
+
+        $ticket = new Ticket();
+        $ticket->coddocument = $this->document = 'Servicio';
         $ticket->text = $businessTicket->getTicket();
 
         if (!$ticket->save()) {
