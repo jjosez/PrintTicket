@@ -2,6 +2,7 @@
 
 namespace FacturaScripts\Plugins\PrintTicket\Lib\Ticket\Template;
 
+use _HumbugBox3ab8cff0fda0\___PHPSTORM_HELPERS\this;
 use FacturaScripts\Core\Base\DivisaTools;
 use FacturaScripts\Core\Model\Base\BusinessDocument;
 use FacturaScripts\Dinamic\Model\Empresa;
@@ -55,12 +56,35 @@ class ServiceTemplate extends BaseTicketTemplate
 
         $this->printer->lineBreak();
         $this->printer->text('Descripcion: ');
-        $this->printer->text($this->servicio->descripcion);
+        $this->printer->bigText($this->servicio->descripcion);
 
         $this->printer->lineBreak();
         $this->printer->text('Observaciones: ');
-        $this->printer->text($this->servicio->observaciones);
+        $this->printer->bigText($this->servicio->observaciones);
         $this->printer->lineSplitter('=');
+
+        $this->buildTrabajos();
+        $this->printer->lineSplitter('=');
+    }
+
+    protected function buildTrabajos()
+    {
+        $this->printer->lineBreak();
+        $this->printer->text('TRABAJOS', true, true);
+        $this->printer->lineSplitter();
+
+        foreach ($this->servicio->getTrabajos() as $trabajo) {
+            $this->printer->keyValueText('Inicio:', $trabajo->fechainicio . ' ' . $trabajo->horainicio);
+            $this->printer->keyValueText('Hasta:', $trabajo->fechafin . ' ' . $trabajo->horafin);
+
+            $this->printer->lineBreak();
+            $this->printer->text('Observaciones: ');
+            $this->printer->bigText($trabajo->observaciones);
+
+            $this->printer->lineBreak();
+            $this->printer->text('Descripcion: ');
+            $this->printer->bigText($trabajo->descripcion);
+        }
     }
 
     public function buildTicket(ServicioAT $servicio, bool $cut = true, bool $open = true) : string
