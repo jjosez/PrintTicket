@@ -2,12 +2,8 @@
 
 namespace FacturaScripts\Plugins\PrintTicket\Lib\Ticket\Template;
 
-use _HumbugBox3ab8cff0fda0\___PHPSTORM_HELPERS\this;
-use FacturaScripts\Core\Base\DivisaTools;
-use FacturaScripts\Core\Model\Base\BusinessDocument;
 use FacturaScripts\Dinamic\Model\Empresa;
 use FacturaScripts\Plugins\Servicios\Model\ServicioAT;
-use FacturaScripts\Plugins\Servicios\Model\TrabajoAT;
 
 /**
  *

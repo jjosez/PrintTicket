@@ -2,7 +2,6 @@
 
 namespace FacturaScripts\Plugins\PrintTicket\Lib\Ticket\Template;
 
-use _HumbugBox3ab8cff0fda0\___PHPSTORM_HELPERS\this;
 use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Dinamic\Lib\Ticket\ESCPOS\Printer;
 use FacturaScripts\Dinamic\Model\Empresa;
