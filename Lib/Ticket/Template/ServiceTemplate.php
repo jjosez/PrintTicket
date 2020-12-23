@@ -30,46 +30,42 @@ class ServiceTemplate extends BaseTicketTemplate
 
     protected function buildHead()
     {
-        $company = $this->empresa;
         $this->printer->lineBreak();
 
         $this->printer->lineSplitter();
-        $this->printer->text($company->nombrecorto, true, true);
-        $this->printer->bigText($company->direccion, true, true);
+        $this->printer->text($this->empresa->nombrecorto, true, true);
+        $this->printer->bigText($this->empresa->direccion, true, true);
 
-        if ($company->telefono1) {
-            $this->printer->text('TEL: ' . $company->telefono1, true, true);
+        if ($this->empresa->telefono1) {
+            $this->printer->text('TEL: ' . $this->empresa->telefono1, true, true);
         }
 
-        $this->printer->text($company->cifnif, true, true);
+        $this->printer->text($this->empresa->cifnif, true, true);
         $this->printer->LineSplitter('=');
     }
 
     protected function buildMain()
     {
-        $this->printer->text($this->servicio->idservicio, true, true);
+        $this->printer->keyValueText('Servicio No.', $this->servicio->idservicio);
+        $this->printer->keyValueText('Cliente ', $this->servicio->codcliente);
         $this->printer->keyValueText('Fecha', $this->servicio->fecha);
         $this->printer->keyValueText('Hora', $this->servicio->hora);
-
-        $this->printer->text('Cliente: ' . $this->servicio->codcliente);
         $this->printer->lineSplitter('=');
 
-        $this->printer->lineBreak();
         $this->printer->text('Descripcion: ');
         $this->printer->bigText($this->servicio->descripcion);
-
         $this->printer->lineBreak();
+
         $this->printer->text('Observaciones: ');
         $this->printer->bigText($this->servicio->observaciones);
         $this->printer->lineSplitter('=');
 
-        $this->buildTrabajos();
+        $this->buildServiceJobs();
         $this->printer->lineSplitter('=');
     }
 
-    protected function buildTrabajos()
+    protected function buildServiceJobs()
     {
-        $this->printer->lineBreak();
         $this->printer->text('TRABAJOS', true, true);
         $this->printer->lineSplitter();
 
@@ -84,6 +80,7 @@ class ServiceTemplate extends BaseTicketTemplate
             $this->printer->lineBreak();
             $this->printer->text('Descripcion: ');
             $this->printer->bigText($trabajo->descripcion);
+            $this->printer->lineSplitter();
         }
     }
 

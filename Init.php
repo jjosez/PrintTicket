@@ -2,8 +2,8 @@
 namespace FacturaScripts\Plugins\PrintTicket;
 
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
-use FacturaScripts\Core\Base\EventManager;
 use FacturaScripts\Core\Base\InitClass;
+use FacturaScripts\Core\Lib\AssetManager;
 use FacturaScripts\Core\Model\ApiKey;
 
 
@@ -12,7 +12,7 @@ class Init extends InitClass
 
     public function init()
     {
-        /// código a ejecutar cada vez que carga FacturaScripts (si este plugin está activado).
+        //AssetManager::add('js', FS_ROUTE . '/Dinamic/Assets/JS/Print.js');
     }
 
     public function update()
