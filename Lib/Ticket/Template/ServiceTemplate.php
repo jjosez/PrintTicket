@@ -80,7 +80,7 @@ class ServiceTemplate extends BaseTicketTemplate
         }
     }
 
-    public function buildTicket(ServicioAT $servicio, bool $cut = true, bool $open = true) : string
+    public function buildTicket(ServicioAT $servicio) : string
     {
         $this->servicio = $servicio;
 
@@ -88,9 +88,7 @@ class ServiceTemplate extends BaseTicketTemplate
         $this->buildMain();
         $this->buildFoot();
 
-        $this->printer->lineBreak();
-        $this->openDrawerCommand($open);
-        $this->cutPapperCommand($cut);
+        $this->printer->lineBreak(2);
 
         return $this->printer->output();
     }

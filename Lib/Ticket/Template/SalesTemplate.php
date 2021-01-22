@@ -2,7 +2,7 @@
 
 namespace FacturaScripts\Plugins\PrintTicket\Lib\Ticket\Template;
 
-use FacturaScripts\Core\Base\DivisaTools;
+use FacturaScripts\Core\Base\NumberTools;
 use FacturaScripts\Core\Model\Base\BusinessDocument;
 use FacturaScripts\Dinamic\Model\Empresa;
 
@@ -31,6 +31,8 @@ class SalesTemplate extends BaseTicketTemplate
             foreach ($this->footLines as $line) {
                 $this->printer->bigText($line, true, true);
             }
+
+            $this->printer->lineBreak(2);
         }
 
         $this->printer->barcode($this->document->codigo);
@@ -75,33 +77,30 @@ class SalesTemplate extends BaseTicketTemplate
         $this->printer->text($columnas);
         $this->printer->lineSplitter('=');
 
-        $divisaTool = new DivisaTools();
-        $divisaTool->findDivisa($this->document);
-
         foreach ($this->document->getLines() as $line) {
             $this->printer->text("$line->referencia - $line->descripcion");
             $desglose = $this->printer->columnText(3, $line->cantidad);
-            $desglose .= $this->printer->columnText(3, $divisaTool::format($line->pvpunitario));
-            $desglose .= $this->printer->columnText(3, $divisaTool::format($line->pvpsindto));
+            $desglose .= $this->printer->columnText(3, NumberTools::format($line->pvpunitario));
+            $desglose .= $this->printer->columnText(3, NumberTools::format($line->pvpsindto));
             $this->printer->text($desglose);
 
             $descuento = $line->pvpsindto - ($line->pvpsindto * $line->getEUDiscount());
-            $this->printer->keyValueText('Descuento:', '- ' . $divisaTool::format($descuento));
+            $this->printer->keyValueText('Descuento:', '- ' . NumberTools::format($descuento));
 
             $impuestoLinea = $line->pvptotal * $line->iva / 100;
-            $this->printer->keyValueText("Impuesto $line->iva%:", '+ ' . $divisaTool::format($impuestoLinea));
-            $this->printer->keyValueText('Total linea:', $divisaTool::format($line->pvptotal + $impuestoLinea));
+            $this->printer->keyValueText("Impuesto $line->iva%:", '+ ' . NumberTools::format($impuestoLinea));
+            $this->printer->keyValueText('Total linea:', NumberTools::format($line->pvptotal + $impuestoLinea));
 
             $this->printer->lineBreak();
         }
 
         $this->printer->lineSplitter('=');
-        $this->printer->keyValueText('BASE', $divisaTool::format($this->document->neto));
-        $this->printer->keyValueText('IVA', $divisaTool::format($this->document->totaliva));
-        $this->printer->keyValueText('TOTAL DEL DOCUMENTO:', $divisaTool::format($this->document->total));
+        $this->printer->keyValueText('BASE', NumberTools::format($this->document->neto));
+        $this->printer->keyValueText('IVA', NumberTools::format($this->document->totaliva));
+        $this->printer->keyValueText('TOTAL DEL DOCUMENTO:', NumberTools::format($this->document->total));
     }
 
-    public function buildTicket(BusinessDocument $document, array $headlines, array $footlines, bool $cut = true, bool $open = true) : string
+    public function buildTicket(BusinessDocument $document, array $headlines, array $footlines) : string
     {
         $this->document = $document;
         $this->headLines = $headlines;
@@ -111,10 +110,10 @@ class SalesTemplate extends BaseTicketTemplate
         $this->buildMain();
         $this->buildFoot();
 
-        $this->printer->lineBreak();
-        $this->openDrawerCommand($open);
-        $this->cutPapperCommand($cut);
+        $this->printer->lineBreak(2);
 
-        return $this->printer->output();
+        $result = $this->printer->output();
+
+        return $result;
     }
 }

@@ -1,12 +1,9 @@
-<?php 
-
+<?php
 namespace FacturaScripts\Plugins\PrintTicket\Lib\Ticket\ESCPOS;
-
-use _HumbugBox3ab8cff0fda0\___PHPSTORM_HELPERS\this;
-
 /**
  * 
  */
+
 class Printer
 {
     private $width;

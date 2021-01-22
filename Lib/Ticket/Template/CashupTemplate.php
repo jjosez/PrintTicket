@@ -56,16 +56,14 @@ class CashupTemplate extends BaseTicketTemplate
         $this->printer->keyValueText('TOTAL CONTADO', $this->cashup->getTotal());
     }
 
-    public function buildTicket(Cashup $cashup, bool $cut = true, bool $open = true): string
+    public function buildTicket(Cashup $cashup): string
     {
         $this->cashup = $cashup;
 
         $this->buildHead();
         $this->buildMain();
 
-        $this->printer->lineBreak();
-        $this->openDrawerCommand($open);
-        $this->cutPapperCommand($cut);
+        $this->printer->lineBreak(2);
 
         return $this->printer->output();
     }

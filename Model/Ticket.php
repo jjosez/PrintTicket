@@ -15,8 +15,8 @@ class Ticket extends Base\ModelClass
     public function clear()
     {
         parent::clear();
-        $this->abrircajon = false;
-        $this->cortarpapel = false;
+        $this->abrircajon = true;
+        $this->cortarpapel = true;
     }
 
     public function install()
