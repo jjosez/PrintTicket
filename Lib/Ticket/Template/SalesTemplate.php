@@ -61,7 +61,7 @@ class SalesTemplate extends BaseTicketTemplate
         }
     }
 
-    protected function buildMain()
+    protected function buildMain($gift)
     {
         $this->printer->text($this->document->codigo, true, true);
         $fechacompleta = $this->document->fecha . ' ' . $this->document->hora;
@@ -79,35 +79,43 @@ class SalesTemplate extends BaseTicketTemplate
 
         foreach ($this->document->getLines() as $line) {
             $this->printer->text("$line->referencia - $line->descripcion");
+
             $desglose = $this->printer->columnText(3, $line->cantidad);
-            $desglose .= $this->printer->columnText(3, NumberTools::format($line->pvpunitario));
-            $desglose .= $this->printer->columnText(3, NumberTools::format($line->pvpsindto));
-            $this->printer->text($desglose);
 
-            $descuento = $line->pvpsindto - ($line->pvpsindto * $line->getEUDiscount());
-            $this->printer->keyValueText('Descuento:', '- ' . NumberTools::format($descuento));
+            if (false === $gift) {
+                $desglose .= $this->printer->columnText(3, NumberTools::format($line->pvpunitario));
+                $desglose .= $this->printer->columnText(3, NumberTools::format($line->pvpsindto));
+                $this->printer->text($desglose);
 
-            $impuestoLinea = $line->pvptotal * $line->iva / 100;
-            $this->printer->keyValueText("Impuesto $line->iva%:", '+ ' . NumberTools::format($impuestoLinea));
-            $this->printer->keyValueText('Total linea:', NumberTools::format($line->pvptotal + $impuestoLinea));
+                $descuento = $line->pvpsindto - ($line->pvpsindto * $line->getEUDiscount());
+                $this->printer->keyValueText('Descuento:', '- ' . NumberTools::format($descuento));
+
+                $impuestoLinea = $line->pvptotal * $line->iva / 100;
+                $this->printer->keyValueText("Impuesto $line->iva%:", '+ ' . NumberTools::format($impuestoLinea));
+                $this->printer->keyValueText('Total linea:', NumberTools::format($line->pvptotal + $impuestoLinea));
+            } else {
+                $this->printer->text($desglose);
+            }
 
             $this->printer->lineBreak();
         }
 
-        $this->printer->lineSplitter('=');
-        $this->printer->keyValueText('BASE', NumberTools::format($this->document->neto));
-        $this->printer->keyValueText('IVA', NumberTools::format($this->document->totaliva));
-        $this->printer->keyValueText('TOTAL DEL DOCUMENTO:', NumberTools::format($this->document->total));
+        if (false === $gift) {
+            $this->printer->lineSplitter('=');
+            $this->printer->keyValueText('BASE', NumberTools::format($this->document->neto));
+            $this->printer->keyValueText('IVA', NumberTools::format($this->document->totaliva));
+            $this->printer->keyValueText('TOTAL DEL DOCUMENTO:', NumberTools::format($this->document->total));
+        }
     }
 
-    public function buildTicket(BusinessDocument $document, array $headlines, array $footlines) : string
+    public function buildTicket(BusinessDocument $document, array $headlines, array $footlines, bool $gift) : string
     {
         $this->document = $document;
         $this->headLines = $headlines;
         $this->footLines = $footlines;
 
         $this->buildHead();
-        $this->buildMain();
+        $this->buildMain($gift);
         $this->buildFoot();
 
         $this->printer->lineBreak(2);

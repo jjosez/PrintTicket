@@ -53,6 +53,7 @@ class PrintTicket extends Controller
 
         //$code = $this->request->query->get('code');
         $code = $this->request->request->get('code');
+        $gift = $this->request->request->get('gift');
         $modelName = $this->request->request->get('documento');
 
         if ('' === $modelName || '' === $code) {
@@ -62,11 +63,11 @@ class PrintTicket extends Controller
         if ('Servicio' === $modelName) {
             $this->saveServicePrintJob($code);
         } else {
-            $this->savePrintJob($modelName, $code);
+            $this->savePrintJob($modelName, $code, $gift);
         }
     }
 
-    protected function savePrintJob($modelName, $code)
+    protected function savePrintJob($modelName, $code, bool $gift)
     {
         $className = self::MODEL_NAMESPACE . $modelName;
         $document = (new $className)->get($code);
@@ -77,7 +78,7 @@ class PrintTicket extends Controller
 
         $ticket = new Ticket();
         $ticket->coddocument = $this->document = $document->modelClassName();
-        $ticket->text = $businessTicket->getTicket();
+        $ticket->text = $businessTicket->getTicket($gift);
 
         if (!$ticket->save()) {
             echo 'Error al guardar el ticket';

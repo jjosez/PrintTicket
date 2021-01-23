@@ -4,7 +4,7 @@ const code = params.get('code');
 
 function printTicketDialog() {
     (async() => {
-        let printModule = await import('./PrintTicket.js');
+        const printModule = await import('./PrintTicket.js');
         printModule.print('AlbaranCliente', code);
     })();
 }

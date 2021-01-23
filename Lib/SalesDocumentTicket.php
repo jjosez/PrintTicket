@@ -27,12 +27,12 @@ class SalesDocumentTicket
         $this->template = $template ?: new SalesTemplate($document->getCompany(), $width);
     }
 
-    public function getTicket()
+    public function getTicket(bool $gift = false)
     {
         $headlines = $this->getCustomLines('header');
         $footlines = $this->getCustomLines('footer');
 
-        return $this->template->buildTicket($this->document, $headlines, $footlines);
+        return $this->template->buildTicket($this->document, $headlines, $footlines, $gift);
     }
 
     private function getCustomLines(string $position)
