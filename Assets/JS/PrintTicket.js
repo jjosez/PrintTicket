@@ -12,7 +12,7 @@ export function print(document, code) {
                 }
             },
             normal: {
-                label: "Normal",
+                label: '<i class="fas fa-print"></i> Normal',
                 className: 'btn-primary',
                 callback: function(){
                     sendPrintJob(this, code, document, 0);

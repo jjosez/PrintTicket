@@ -22,7 +22,7 @@ class Printer
 
     public function text(string $text, $linebreak = true, $center = false) 
     {
-        $text = substr($text, 0, $this->width);
+        $text = substr($this->decodeText($text), 0, $this->width);
         if ($text != '') {
             if ($center) {
                 $this->output .= Utils::centerText($text, $this->width);
@@ -37,6 +37,8 @@ class Printer
 
     public function bigText(string $text, $linebreak = true, $center = false)
     {
+        $text = $this->decodeText($text);
+
         if ($text != '') {
             if ($center) {
                 $this->output .= Utils::centerText($text, $this->width);
@@ -116,5 +118,14 @@ class Printer
     public function setWidth($width = 45)
     {
         $this->width = $width;
+    }
+
+    public function codepage(int $code = 0)
+    {
+        $this->output .= chr(27) . chr(116) . chr($code);
+    }
+
+    private function decodeText(string $string) {
+        return iconv('UTF-8', 'ISO-8859-1//TRANSLIT//IGNORE', $string);
     }
 }

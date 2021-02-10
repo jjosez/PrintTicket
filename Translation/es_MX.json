@@ -2,6 +2,7 @@
     "common-ticket-settings" : "Configuracion General",
     "footer-custom-lines": "Lineas de pie",
     "header-custom-lines" : "Lineas de encabezado",
+    "print-ticket-line-lenght": "Número de caracteres",
     "print-ticket-settings": "Configuracion de tickets",
     "printing" : "Imprimiendo"
 }

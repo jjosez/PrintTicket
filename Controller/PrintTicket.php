@@ -69,6 +69,7 @@ class PrintTicket extends Controller
 
     protected function savePrintJob($modelName, $code, bool $gift)
     {
+        //$this->testCodePage();
         $className = self::MODEL_NAMESPACE . $modelName;
         $document = (new $className)->get($code);
 
@@ -99,6 +100,15 @@ class PrintTicket extends Controller
 
         if (!$ticket->save()) {
             echo 'Error al guardar el ticket';
+        }
+    }
+
+    private function testCodePage() {
+        $text = "Prueba de caracteres especiales: ó, $, °.";
+        echo 'IGNORE   : ', iconv("UTF-8", "Windows-1252//IGNORE", $text), PHP_EOL;
+
+        foreach(mb_list_encodings() as $chr){
+            echo mb_convert_encoding($text, 'UTF-8', $chr)." : ".$chr."<br>";
         }
     }
 }

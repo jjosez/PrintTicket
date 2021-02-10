@@ -6,7 +6,7 @@
                 <input type="hidden" name="id" value="1">
                 <div class="col-md-2">
                     <div class="form-group">
-                        <label>N&uacute;mero de caracteres</label>
+                        <label>{{ i18n.trans('print-ticket-line-lenght') }}</label>
                         {% set linelength = appSettings.get('ticket', 'linelength', 50) %}
                         <input type="text" name="linelength" value="{{ linelength }}" class="form-control" required="">
                     </div>

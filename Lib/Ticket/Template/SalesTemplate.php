@@ -114,11 +114,12 @@ class SalesTemplate extends BaseTicketTemplate
         $this->headLines = $headlines;
         $this->footLines = $footlines;
 
+        //$this->printer->codepage();
         $this->buildHead();
         $this->buildMain($gift);
         $this->buildFoot();
 
-        $this->printer->lineBreak(2);
+        $this->printer->lineBreak(3);
 
         $result = $this->printer->output();
 
