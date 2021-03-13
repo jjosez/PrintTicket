@@ -36,6 +36,10 @@ function sendPrintJob(dialog, code, document, gift = 0) {
         data: data,
         success: function (message) {
             dialog.find('.bootbox-body').html(message);
+
+            setTimeout(function(){
+                dialog.modal('hide');
+            }, 400);
         }
     });
 }
