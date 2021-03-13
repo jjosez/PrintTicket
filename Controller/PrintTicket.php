@@ -79,7 +79,7 @@ class PrintTicket extends Controller
 
         $ticket = new Ticket();
         $ticket->coddocument = $this->document = $document->modelClassName();
-        $ticket->text = $this->cleanTicketChars($businessTicket->getTicket($gift));
+        $ticket->text = $this->sanitizeText($businessTicket->getTicket($gift));
 
         if (!$ticket->save()) {
             echo 'Error al guardar el ticket';
@@ -106,15 +106,18 @@ class PrintTicket extends Controller
     private function testCodePage()
     {
         $text = "Prueba de caracteres especiales: ó, $, °.";
-        echo 'IGNORE   : ', iconv("UTF-8", "ASCII//TRANSLIT//IGNORE", $text), PHP_EOL;
+        echo 'IGNORE   : ', iconv("UTF-8", "ISO-8859-1//TRANSLIT//IGNORE", $text), PHP_EOL;
 
         foreach(mb_list_encodings() as $chr){
             echo mb_convert_encoding($text, 'UTF-8', $chr) . " : " . $chr . "<br>";
         }
     }
 
-    private function cleanTicketChars(string $text)
+    private function sanitizeText(string $text)
     {
-        return iconv("UTF-8", "ASCII//TRANSLIT//IGNORE", $text);
+        //$encoding = mb_detect_encoding($text, 'UTF-8, ISO-8859-15');
+        $text = utf8_encode($text);
+        //return iconv('UTF-8', "ISO-8859-15//TRANSLIT//IGNORE", $text);
+        return transliterator_transliterate('Any-Latin; Latin-ASCII;', $text);
     }
 }
