@@ -19,6 +19,7 @@
 namespace FacturaScripts\Plugins\PrintTicket\Controller;
 
 use FacturaScripts\Core\Base\Controller;
+use FacturaScripts\Core\Base\Translator;
 use FacturaScripts\Dinamic\Lib\SalesDocumentTicket;
 use FacturaScripts\Dinamic\Model\Ticket;
 use FacturaScripts\Plugins\PrintTicket\Lib\CustomerServiceTicket;
@@ -49,9 +50,8 @@ class PrintTicket extends Controller
     public function privateCore(&$response, $user, $permissions)
     {
         parent::privateCore($response, $user, $permissions);
-        $this->setTemplate('PrintTicketScreen');
+        $this->setTemplate(false);
 
-        //$code = $this->request->query->get('code');
         $code = $this->request->request->get('code');
         $gift = $this->request->request->get('gift');
         $modelName = $this->request->request->get('documento');
@@ -69,7 +69,6 @@ class PrintTicket extends Controller
 
     protected function savePrintJob($modelName, $code, bool $gift)
     {
-        //$this->testCodePage();
         $className = self::MODEL_NAMESPACE . $modelName;
         $document = (new $className)->get($code);
 
@@ -79,11 +78,13 @@ class PrintTicket extends Controller
 
         $ticket = new Ticket();
         $ticket->coddocument = $this->document = $document->modelClassName();
-        $ticket->text = $this->sanitizeText($businessTicket->getTicket($gift));
+        $ticket->text = $businessTicket->getTicket($gift);
 
         if (!$ticket->save()) {
             echo 'Error al guardar el ticket';
         }
+
+        echo $this->printMessage($ticket->coddocument);
     }
 
     protected function saveServicePrintJob($code)
@@ -101,23 +102,21 @@ class PrintTicket extends Controller
         if (!$ticket->save()) {
             echo 'Error al guardar el ticket';
         }
+
+        echo $this->printMessage($ticket->coddocument);
     }
 
-    private function testCodePage()
+    private function printMessage(string $code)
     {
-        $text = "Prueba de caracteres especiales: ó, $, °.";
-        echo 'IGNORE   : ', iconv("UTF-8", "ISO-8859-1//TRANSLIT//IGNORE", $text), PHP_EOL;
+        $printMessage = (new Translator())->trans('printing');
+        $documentType = (new Translator())->trans($code);
 
-        foreach(mb_list_encodings() as $chr){
-            echo mb_convert_encoding($text, 'UTF-8', $chr) . " : " . $chr . "<br>";
-        }
-    }
+        $response = [
+            "message" => $printMessage,
+            "document" => $documentType,
+            "code" => $code
+        ];
 
-    private function sanitizeText(string $text)
-    {
-        //$encoding = mb_detect_encoding($text, 'UTF-8, ISO-8859-15');
-        $text = utf8_encode($text);
-        //return iconv('UTF-8', "ISO-8859-15//TRANSLIT//IGNORE", $text);
-        return transliterator_transliterate('Any-Latin; Latin-ASCII;', $text);
+        return json_encode($response);
     }
 }
