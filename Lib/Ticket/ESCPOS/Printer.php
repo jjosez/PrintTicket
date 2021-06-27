@@ -1,5 +1,7 @@
 <?php
 namespace FacturaScripts\Plugins\PrintTicket\Lib\Ticket\ESCPOS;
+use function transliterator_transliterate;
+
 /**
  * 
  */
@@ -22,7 +24,7 @@ class Printer
 
     public function text(string $text, $linebreak = true, $center = false) 
     {
-        $text = substr($this->decodeText($text), 0, $this->width);
+        $text = substr($this->sanitizeText($text), 0, $this->width);
         if ($text != '') {
             if ($center) {
                 $this->output .= Utils::centerText($text, $this->width);
@@ -37,7 +39,7 @@ class Printer
 
     public function bigText(string $text, $linebreak = true, $center = false)
     {
-        $text = $this->decodeText($text);
+        $text = $this->sanitizeText($text);
 
         if ($text != '') {
             if ($center) {
@@ -78,6 +80,22 @@ class Printer
         $barcode .= chr(29) . chr(72) . chr(50);  // barcode HRI position n=1,49 above n=2,50 below
         $barcode .= chr(29) . chr(107) . chr(4) . $text . chr(0);
         $this->output .= $barcode;
+    }
+
+    public function logo(string $command)
+    {
+        $chars = explode('.', $command);
+
+        if ($chars) {
+            $logocmd = '';
+            foreach ($chars as $char) {
+                $logocmd .= chr($char);
+            }
+
+            $this->output .= $logocmd;
+        }
+
+        $this->lineBreak(2);
     }
 
     public function cut()
@@ -125,7 +143,14 @@ class Printer
         $this->output .= chr(27) . chr(116) . chr($code);
     }
 
-    private function decodeText(string $string) {
+    private function decodeText(string $string)
+    {
         return iconv('UTF-8', 'ISO-8859-1//TRANSLIT//IGNORE', $string);
+    }
+
+    private function sanitizeText(string $text)
+    {
+        //$text = utf8_encode($text);
+        return transliterator_transliterate('Any-Latin; Latin-ASCII;', $text);
     }
 }

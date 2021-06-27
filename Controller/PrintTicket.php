@@ -79,7 +79,7 @@ class PrintTicket extends Controller
 
         $ticket = new Ticket();
         $ticket->coddocument = $this->document = $document->modelClassName();
-        $ticket->text = $this->sanitizeText($businessTicket->getTicket($gift));
+        $ticket->text = $businessTicket->getTicket($gift);
 
         if (!$ticket->save()) {
             echo 'Error al guardar el ticket';
@@ -111,13 +111,5 @@ class PrintTicket extends Controller
         foreach(mb_list_encodings() as $chr){
             echo mb_convert_encoding($text, 'UTF-8', $chr) . " : " . $chr . "<br>";
         }
-    }
-
-    private function sanitizeText(string $text)
-    {
-        //$encoding = mb_detect_encoding($text, 'UTF-8, ISO-8859-15');
-        $text = utf8_encode($text);
-        //return iconv('UTF-8', "ISO-8859-15//TRANSLIT//IGNORE", $text);
-        return transliterator_transliterate('Any-Latin; Latin-ASCII;', $text);
     }
 }

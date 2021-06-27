@@ -2,6 +2,7 @@
 
 namespace FacturaScripts\Plugins\PrintTicket\Lib\Ticket\Template;
 
+use FacturaScripts\Core\App\AppSettings;
 use FacturaScripts\Core\Base\NumberTools;
 use FacturaScripts\Core\Model\Base\BusinessDocument;
 use FacturaScripts\Dinamic\Model\Empresa;
@@ -114,15 +115,28 @@ class SalesTemplate extends BaseTicketTemplate
         $this->headLines = $headlines;
         $this->footLines = $footlines;
 
-        //$this->printer->codepage();
+        $this->topSpace();
+        $this->pageLogo();
         $this->buildHead();
         $this->buildMain($gift);
         $this->buildFoot();
+        $this->bottomSpace();
 
-        $this->printer->lineBreak(3);
+        return $this->printer->output();
+    }
 
-        $result = $this->printer->output();
+    protected function pageLogo()
+    {
+        $this->printer->logo('28.112.1.3');
+    }
 
-        return $result;
+    protected function topSpace()
+    {
+        $this->printer->lineBreak(AppSettings::get('ticket', 'ticket-top-space', 1));
+    }
+
+    protected function bottomSpace()
+    {
+        $this->printer->lineBreak(AppSettings::get('ticket', 'ticket-bottom-space', 2));
     }
 }

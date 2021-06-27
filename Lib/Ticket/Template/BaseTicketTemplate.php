@@ -11,7 +11,15 @@ use FacturaScripts\Dinamic\Model\Empresa;
  */
 abstract class BaseTicketTemplate
 {
+
+    /**
+     * @var Empresa
+     */
     protected $empresa;
+
+    /**
+     * @var Printer
+     */
     protected $printer;
 
     public function __construct(Empresa $empresa, $width = null)

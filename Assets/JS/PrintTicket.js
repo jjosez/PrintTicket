@@ -7,23 +7,23 @@ export function print(document, code) {
                 label: '<i class="fas fa-gift"></i> Regalo',
                 className: 'btn-warning',
                 callback: function(){
-                    sendPrintJob(this, code, document, 1);
-                    return false;
+                    printDialog(code, document, 1);
                 }
             },
             normal: {
                 label: '<i class="fas fa-print"></i> Normal',
                 className: 'btn-primary',
                 callback: function(){
-                    sendPrintJob(this, code, document, 0);
-                    return false;
+                    printDialog(code, document, 0);
                 }
             }
         }
     });
 }
 
-function sendPrintJob(dialog, code, document, gift = 0) {
+function printDialog(code, document, gift = 0) {
+    const PRINTER_SERVER_PORT = '8089';
+
     const data = {
         code: code,
         documento: document,
@@ -34,12 +34,21 @@ function sendPrintJob(dialog, code, document, gift = 0) {
         type: 'POST',
         url: 'PrintTicket',
         data: data,
-        success: function (message) {
-            dialog.find('.bootbox-body').html(message);
-
-            setTimeout(function(){
-                dialog.modal('hide');
-            }, 400);
+        success: function () {
+            var dialog = bootbox.dialog({
+                message: '<div class="text-center"><h1><i class="fas fa-print" aria-hidden="true"></i></h1></div>',
+            }).on('shown.bs.modal', function(){
+                $.ajax({
+                    url: 'http://localhost:' + PRINTER_SERVER_PORT + '?documento=' + data.documento,
+                    type: 'GET',
+                    crossDomain: true,
+                    success: function () {
+                        setTimeout(function(){
+                            dialog.modal('hide');
+                        }, 400);
+                    }
+                });
+            });
         }
     });
 }

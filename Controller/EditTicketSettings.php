@@ -20,6 +20,7 @@ namespace FacturaScripts\Plugins\PrintTicket\Controller;
 
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Lib\ExtendedController\PanelController;
+
 /**
  * Controller to save general settings to use generating receipts.
  *
@@ -85,21 +86,29 @@ class EditTicketSettings extends PanelController
 
     private function saveSettings()
     {
-        $appSettings = $this->toolBox()->appSettings();
+        $settings = $this->toolBox()->appSettings();
 
         $footerText = $this->request->request->get('footertext');
         if ($footerText) {
-            $appSettings->set('ticket', 'footertext', $footerText);
+            $settings->set('ticket', 'footertext', $footerText);
         }
 
         $lineLength = $this->request->request->get('linelength');
         if ($lineLength) {
-            $appSettings->set('ticket', 'linelength', $lineLength);
+            $settings->set('ticket', 'linelength', $lineLength);
         }
 
-        $gift = ($this->request->request->get('gift')) ? true : false;
-        $appSettings->set('ticket', 'gift', $gift);
+        $logocommand = $this->request->request->get('logocommand');
+        if ($logocommand) {
+            $settings->set('ticket', 'logocommand', $logocommand);
+        }
 
-        $appSettings->save();
+        $topSpace = $this->request->request->get('top-space') ?? 1;
+        $settings->set('ticket', 'ticket-top-space', $topSpace);
+
+        $bottomSpace = $this->request->request->get('bottom-space') ?? 1;
+        $settings->set('ticket', 'ticket-bottom-space', $bottomSpace);
+
+        $settings->save();
     }
 }
