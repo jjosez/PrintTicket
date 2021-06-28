@@ -1,6 +1,5 @@
 <?php
 namespace FacturaScripts\Plugins\PrintTicket\Lib\Ticket\ESCPOS;
-use function transliterator_transliterate;
 
 /**
  * 
@@ -11,7 +10,7 @@ class Printer
     private $width;
     private $output;
     
-    function __construct($width = '45')
+    function __construct(int $width = 45)
     {
         $this->width = $width;
         $this->output = '';
@@ -24,7 +23,7 @@ class Printer
 
     public function text(string $text, $linebreak = true, $center = false) 
     {
-        $text = substr($this->sanitizeText($text), 0, $this->width);
+        $text = substr($this->cleanText($text), 0, $this->width);
         if ($text != '') {
             if ($center) {
                 $this->output .= Utils::centerText($text, $this->width);
@@ -37,9 +36,9 @@ class Printer
         }  
     }
 
-    public function bigText(string $text, $linebreak = true, $center = false)
+    public function bigText(?string $text, $linebreak = true, $center = false)
     {
-        $text = $this->sanitizeText($text);
+        $text = $this->cleanText($text);
 
         if ($text != '') {
             if ($center) {
@@ -82,22 +81,6 @@ class Printer
         $this->output .= $barcode;
     }
 
-    public function logo(string $command)
-    {
-        $chars = explode('.', $command);
-
-        if ($chars) {
-            $logocmd = '';
-            foreach ($chars as $char) {
-                $logocmd .= chr($char);
-            }
-
-            $this->output .= $logocmd;
-        }
-
-        $this->lineBreak(2);
-    }
-
     public function cut()
     {
         $this->output .= '[[cut]]';
@@ -128,16 +111,6 @@ class Printer
         $this->lineBreak();
     }
 
-    public function getWidth()
-    {
-        return $this->width;
-    }
-
-    public function setWidth($width = 45)
-    {
-        $this->width = $width;
-    }
-
     public function codepage(int $code = 0)
     {
         $this->output .= chr(27) . chr(116) . chr($code);
@@ -148,9 +121,19 @@ class Printer
         return iconv('UTF-8', 'ISO-8859-1//TRANSLIT//IGNORE', $string);
     }
 
-    private function sanitizeText(string $text)
+    private function cleanText(?string $string): string
     {
-        //$text = utf8_encode($text);
-        return transliterator_transliterate('Any-Latin; Latin-ASCII;', $text);
+        if (null === $string) return '';
+
+        $charArray = ['Š' => 'S', 'š' => 's', 'Ž' => 'Z', 'ž' => 'z', 'À' => 'A', 'Á' => 'A', 'Â' => 'A', 'Ã' => 'A',
+            'Ä' => 'A', 'Å' => 'A', 'Æ' => 'A', 'Ç' => 'C', 'È' => 'E', 'É' => 'E', 'Ê' => 'E', 'Ë' => 'E', 'Ì' => 'I',
+            'Í' => 'I', 'Î' => 'I', 'Ï' => 'I', 'Ñ' => 'N', 'Ò' => 'O', 'Ó' => 'O', 'Ô' => 'O', 'Õ' => 'O', 'Ö' => 'O',
+            'Ø' => 'O', 'Ù' => 'U', 'Ú' => 'U', 'Û' => 'U', 'Ü' => 'U', 'Ý' => 'Y', 'Þ' => 'B', 'ß' => 'Ss', 'à' => 'a',
+            'á' => 'a', 'â' => 'a', 'ã' => 'a', 'ä' => 'a', 'å' => 'a', 'æ' => 'a', 'ç' => 'c', 'è' => 'e', 'é' => 'e',
+            'ê' => 'e', 'ë' => 'e', 'ì' => 'i', 'í' => 'i', 'î' => 'i', 'ï' => 'i', 'ð' => 'o', 'ñ' => 'n', 'ò' => 'o',
+            'ó' => 'o', 'ô' => 'o', 'õ' => 'o', 'ö' => 'o', 'ø' => 'o', 'ù' => 'u', 'ú' => 'u', 'û' => 'u', 'ý' => 'y',
+            'þ' => 'b', 'ÿ' => 'y'];
+
+        return strtr($string, $charArray);
     }
 }

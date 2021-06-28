@@ -19,10 +19,13 @@
 namespace FacturaScripts\Plugins\PrintTicket\Controller;
 
 use FacturaScripts\Core\Base\Controller;
-use FacturaScripts\Dinamic\Lib\SalesDocumentTicket;
 use FacturaScripts\Dinamic\Model\Ticket;
 use FacturaScripts\Plugins\PrintTicket\Lib\CustomerServiceTicket;
+use FacturaScripts\Plugins\PrintTicket\Lib\SalesTicket;
+use FacturaScripts\Plugins\PrintTicket\Lib\Ticket\Template\SalesTicketBuilder;
+use FacturaScripts\Plugins\PrintTicket\Lib\Ticket\Template\ServiceTicketBuilder;
 use FacturaScripts\Plugins\Servicios\Model\ServicioAT;
+use FacturaScripts\Core\App\AppSettings;
 
 /**
  * Controller to generate a receipt from BusinessDocument Model.
@@ -49,9 +52,8 @@ class PrintTicket extends Controller
     public function privateCore(&$response, $user, $permissions)
     {
         parent::privateCore($response, $user, $permissions);
-        $this->setTemplate('PrintTicketScreen');
+        $this->setTemplate(false);
 
-        //$code = $this->request->query->get('code');
         $code = $this->request->request->get('code');
         $gift = $this->request->request->get('gift');
         $modelName = $this->request->request->get('documento');
@@ -63,53 +65,41 @@ class PrintTicket extends Controller
         if ('Servicio' === $modelName) {
             $this->saveServicePrintJob($code);
         } else {
-            $this->savePrintJob($modelName, $code, $gift);
+            $this->sendPrintJob($modelName, $code, $gift);
         }
     }
 
-    protected function savePrintJob($modelName, $code, bool $gift)
+    protected function sendPrintJob($modelName, $code, bool $gift)
     {
-        //$this->testCodePage();
         $className = self::MODEL_NAMESPACE . $modelName;
         $document = (new $className)->get($code);
 
         if (false === $document) return;
+        $ticketWidth = $this->getDefaulTicketWidth();
+        $ticketBuilder = new SalesTicketBuilder($document, $ticketWidth, $gift);
 
-        $businessTicket = new SalesDocumentTicket($document, $modelName);
+        $salesTicket = new SalesTicket($ticketBuilder);
+        $salesTicket->savePrintJob();
 
-        $ticket = new Ticket();
-        $ticket->coddocument = $this->document = $document->modelClassName();
-        $ticket->text = $businessTicket->getTicket($gift);
-
-        if (!$ticket->save()) {
-            echo 'Error al guardar el ticket';
-        }
+        echo $salesTicket->getMessage();
     }
 
     protected function saveServicePrintJob($code)
     {
-        $document = (new ServicioAT())->get($code);
+        $servicio = (new ServicioAT())->get($code);
 
-        if (false === $document) return;
+        if (false === $servicio) return;
+        $ticketWidth = $this->getDefaulTicketWidth();
+        $ticketBuilder = new ServiceTicketBuilder($servicio, $ticketWidth);
 
-        $businessTicket = new CustomerServiceTicket($document);
+        $serviceTicket = new SalesTicket($ticketBuilder);
+        $serviceTicket->savePrintJob();
 
-        $ticket = new Ticket();
-        $ticket->coddocument = $this->document = 'Servicio';
-        $ticket->text = $businessTicket->getTicket();
-
-        if (!$ticket->save()) {
-            echo 'Error al guardar el ticket';
-        }
+        echo $serviceTicket->getMessage();
     }
 
-    private function testCodePage()
+    private function getDefaulTicketWidth(): int
     {
-        $text = "Prueba de caracteres especiales: ó, $, °.";
-        echo 'IGNORE   : ', iconv("UTF-8", "ISO-8859-1//TRANSLIT//IGNORE", $text), PHP_EOL;
-
-        foreach(mb_list_encodings() as $chr){
-            echo mb_convert_encoding($text, 'UTF-8', $chr) . " : " . $chr . "<br>";
-        }
+        return AppSettings::get('ticket', 'linelength', 50);
     }
 }
