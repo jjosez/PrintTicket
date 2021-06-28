@@ -1,44 +1,52 @@
 <?php
+/*
+ * This file is part of PrintTicket plugin for FacturaScripts
+ * Copyright (c) 2021.  Juan José Prieto Dzul <juanjoseprieto88@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 
 namespace FacturaScripts\Plugins\PrintTicket\Lib\Ticket\Template;
 
 use FacturaScripts\Core\Base\NumberTools;
 use FacturaScripts\Core\Model\Base\BusinessDocument;
-use FacturaScripts\Dinamic\Model\Empresa;
 
-/**
- *
- */
-class SalesTemplate extends BaseTicketTemplate
+class SalesTicketBuilder extends AbstractTicketBuilder
 {
+    /**
+     * @var BusinessDocument
+     */
     protected $document;
-    protected $headLines;
-    protected $footLines;
 
-    public function __construct(Empresa $empresa, $width)
+    /**
+     * @var bool
+     */
+    protected $hidePrices;
+
+    public function __construct(BusinessDocument $document, int $width, bool $hidePrices = false)
     {
-        parent::__construct($empresa, $width);
+        parent::__construct($width);
 
-        $this->headLines = [];
-        $this->footLines = [];
+        $this->document = $document;
+        $this->hidePrices = $hidePrices;
+        $this->ticketType = $document->modelClassName();
     }
 
-    protected function buildFoot()
-    {
-        $this->printer->lineBreak(2);
-
-        if ($this->footLines) {
-            foreach ($this->footLines as $line) {
-                $this->printer->bigText($line, true, true);
-            }
-
-            $this->printer->lineBreak(2);
-        }
-
-        $this->printer->barcode($this->document->codigo);
-    }
-
-    protected function buildHead()
+    /**
+     * Builds the ticket head
+     */
+    protected function buildHeader(): void
     {
         $company = $this->document->getCompany();
         $this->printer->lineBreak();
@@ -54,14 +62,15 @@ class SalesTemplate extends BaseTicketTemplate
         $this->printer->text($company->cifnif, true, true);
         $this->printer->LineSplitter('=');
 
-        if ($this->headLines) {
-            foreach ($this->headLines as $line) {
-                $this->printer->text($line, true, true);
-            }
+        foreach ($this->getCustomLines('header') as $line) {
+            $this->printer->text($line, true, true);
         }
     }
 
-    protected function buildMain($gift)
+    /**
+     * Builds the ticket body
+     */
+    protected function buildBody(): void
     {
         $this->printer->text($this->document->codigo, true, true);
         $fechacompleta = $this->document->fecha . ' ' . $this->document->hora;
@@ -82,7 +91,7 @@ class SalesTemplate extends BaseTicketTemplate
 
             $desglose = $this->printer->columnText(3, $line->cantidad);
 
-            if (false === $gift) {
+            if (false === $this->hidePrices) {
                 $desglose .= $this->printer->columnText(3, NumberTools::format($line->pvpunitario));
                 $desglose .= $this->printer->columnText(3, NumberTools::format($line->pvpsindto));
                 $this->printer->text($desglose);
@@ -100,7 +109,7 @@ class SalesTemplate extends BaseTicketTemplate
             $this->printer->lineBreak();
         }
 
-        if (false === $gift) {
+        if (false === $this->hidePrices) {
             $this->printer->lineSplitter('=');
             $this->printer->keyValueText('BASE', NumberTools::format($this->document->neto));
             $this->printer->keyValueText('IVA', NumberTools::format($this->document->totaliva));
@@ -108,21 +117,32 @@ class SalesTemplate extends BaseTicketTemplate
         }
     }
 
-    public function buildTicket(BusinessDocument $document, array $headlines, array $footlines, bool $gift) : string
+    /**
+     * Builds the ticket foot
+     */
+    protected function buildFooter(): void
     {
-        $this->document = $document;
-        $this->headLines = $headlines;
-        $this->footLines = $footlines;
+        $this->printer->lineBreak(2);
 
-        //$this->printer->codepage();
-        $this->buildHead();
-        $this->buildMain($gift);
-        $this->buildFoot();
+        foreach ($this->getCustomLines('footer') as $line) {
+            $this->printer->bigText($line, true, true);
+        }
+
+        $this->printer->lineBreak(2);
+        $this->printer->barcode($this->document->codigo);
+    }
+
+    /**
+     * @return string
+     */
+    public function getResult(): string
+    {
+        $this->buildHeader();
+        $this->buildBody();
+        $this->buildFooter();
 
         $this->printer->lineBreak(3);
 
-        $result = $this->printer->output();
-
-        return $result;
+        return $this->printer->output();
     }
 }

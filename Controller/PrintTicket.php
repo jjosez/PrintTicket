@@ -19,11 +19,13 @@
 namespace FacturaScripts\Plugins\PrintTicket\Controller;
 
 use FacturaScripts\Core\Base\Controller;
-use FacturaScripts\Core\Base\Translator;
-use FacturaScripts\Dinamic\Lib\SalesDocumentTicket;
 use FacturaScripts\Dinamic\Model\Ticket;
 use FacturaScripts\Plugins\PrintTicket\Lib\CustomerServiceTicket;
+use FacturaScripts\Plugins\PrintTicket\Lib\SalesTicket;
+use FacturaScripts\Plugins\PrintTicket\Lib\Ticket\Template\SalesTicketBuilder;
+use FacturaScripts\Plugins\PrintTicket\Lib\Ticket\Template\ServiceTicketBuilder;
 use FacturaScripts\Plugins\Servicios\Model\ServicioAT;
+use FacturaScripts\Core\App\AppSettings;
 
 /**
  * Controller to generate a receipt from BusinessDocument Model.
@@ -63,60 +65,41 @@ class PrintTicket extends Controller
         if ('Servicio' === $modelName) {
             $this->saveServicePrintJob($code);
         } else {
-            $this->savePrintJob($modelName, $code, $gift);
+            $this->sendPrintJob($modelName, $code, $gift);
         }
     }
 
-    protected function savePrintJob($modelName, $code, bool $gift)
+    protected function sendPrintJob($modelName, $code, bool $gift)
     {
         $className = self::MODEL_NAMESPACE . $modelName;
         $document = (new $className)->get($code);
 
         if (false === $document) return;
+        $ticketWidth = $this->getDefaulTicketWidth();
+        $ticketBuilder = new SalesTicketBuilder($document, $ticketWidth, $gift);
 
-        $businessTicket = new SalesDocumentTicket($document, $modelName);
+        $salesTicket = new SalesTicket($ticketBuilder);
+        $salesTicket->savePrintJob();
 
-        $ticket = new Ticket();
-        $ticket->coddocument = $this->document = $document->modelClassName();
-        $ticket->text = $businessTicket->getTicket($gift);
-
-        if (!$ticket->save()) {
-            echo 'Error al guardar el ticket';
-        }
-
-        echo $this->printMessage($ticket->coddocument);
+        echo $salesTicket->getMessage();
     }
 
     protected function saveServicePrintJob($code)
     {
-        $document = (new ServicioAT())->get($code);
+        $servicio = (new ServicioAT())->get($code);
 
-        if (false === $document) return;
+        if (false === $servicio) return;
+        $ticketWidth = $this->getDefaulTicketWidth();
+        $ticketBuilder = new ServiceTicketBuilder($servicio, $ticketWidth);
 
-        $businessTicket = new CustomerServiceTicket($document);
+        $serviceTicket = new SalesTicket($ticketBuilder);
+        $serviceTicket->savePrintJob();
 
-        $ticket = new Ticket();
-        $ticket->coddocument = $this->document = 'Servicio';
-        $ticket->text = $businessTicket->getTicket();
-
-        if (!$ticket->save()) {
-            echo 'Error al guardar el ticket';
-        }
-
-        echo $this->printMessage($ticket->coddocument);
+        echo $serviceTicket->getMessage();
     }
 
-    private function printMessage(string $code)
+    private function getDefaulTicketWidth(): int
     {
-        $printMessage = (new Translator())->trans('printing');
-        $documentType = (new Translator())->trans($code);
-
-        $response = [
-            "message" => $printMessage,
-            "document" => $documentType,
-            "code" => $code
-        ];
-
-        return json_encode($response);
+        return AppSettings::get('ticket', 'linelength', 50);
     }
 }

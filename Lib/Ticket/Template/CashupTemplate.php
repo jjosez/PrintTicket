@@ -22,17 +22,17 @@ class CashupTemplate extends BaseTicketTemplate
         $this->printer->lineBreak();
 
         $this->printer->lineSplitter('=');
-        $this->printer->text($this->empresa->nombrecorto, true, true);
-        $this->printer->bigText($this->empresa->direccion, true, true);
+        $this->printer->text($this->company->nombrecorto, true, true);
+        $this->printer->bigText($this->company->direccion, true, true);
 
-        if ($this->empresa->telefono1) {
-            $this->printer->text('TEL: ' . $this->empresa->telefono1, true, true);
+        if ($this->company->telefono1) {
+            $this->printer->text('TEL: ' . $this->company->telefono1, true, true);
         }
-        if ($this->empresa->telefono2) {
-            $this->printer->text('TEL: ' . $this->empresa->telefono2, true, true);
+        if ($this->company->telefono2) {
+            $this->printer->text('TEL: ' . $this->company->telefono2, true, true);
         }
 
-        $this->printer->text($this->empresa->cifnif, true, true);
+        $this->printer->text($this->company->cifnif, true, true);
         $this->printer->LineSplitter('=');
     }
 
