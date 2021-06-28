@@ -19,9 +19,9 @@
 namespace FacturaScripts\Plugins\PrintTicket\Controller;
 
 use FacturaScripts\Core\Base\Controller;
-use FacturaScripts\Plugins\PrintTicket\Lib\SalesTicket;
-use FacturaScripts\Plugins\PrintTicket\Lib\Ticket\Template\SalesTicketBuilder;
-use FacturaScripts\Plugins\PrintTicket\Lib\Ticket\Template\ServiceTicketBuilder;
+use FacturaScripts\Plugins\PrintTicket\Lib\PrintingService;
+use FacturaScripts\Plugins\PrintTicket\Lib\Ticket\Builder\SalesTicketBuilder;
+use FacturaScripts\Plugins\PrintTicket\Lib\Ticket\Builder\ServiceTicketBuilder;
 use FacturaScripts\Plugins\Servicios\Model\ServicioAT;
 use FacturaScripts\Core\App\AppSettings;
 
@@ -76,7 +76,7 @@ class PrintTicket extends Controller
         $ticketWidth = $this->getDefaulTicketWidth();
         $ticketBuilder = new SalesTicketBuilder($document, $ticketWidth, $gift);
 
-        $salesTicket = new SalesTicket($ticketBuilder);
+        $salesTicket = new PrintingService($ticketBuilder);
         $salesTicket->savePrintJob();
 
         echo $salesTicket->getMessage();
@@ -90,7 +90,7 @@ class PrintTicket extends Controller
         $ticketWidth = $this->getDefaulTicketWidth();
         $ticketBuilder = new ServiceTicketBuilder($servicio, $ticketWidth);
 
-        $serviceTicket = new SalesTicket($ticketBuilder);
+        $serviceTicket = new PrintingService($ticketBuilder);
         $serviceTicket->savePrintJob();
 
         echo $serviceTicket->getMessage();

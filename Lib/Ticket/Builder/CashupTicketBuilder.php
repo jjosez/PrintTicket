@@ -1,10 +1,9 @@
 <?php
 
 
-namespace FacturaScripts\Plugins\PrintTicket\Lib\Ticket\Template;
+namespace FacturaScripts\Plugins\PrintTicket\Lib\Ticket\Builder;
 
 
-use _HumbugBox3ab8cff0fda0\___PHPSTORM_HELPERS\this;
 use FacturaScripts\Dinamic\Model\Empresa;
 use FacturaScripts\Dinamic\Model\SesionPOS;
 
@@ -56,7 +55,7 @@ class CashupTicketBuilder extends AbstractTicketBuilder
         $this->printer->lineBreak();
 
         foreach ($this->session->getPagosTotales() as $payment) {
-            $this->printer->keyValueText(strtoupper($payment->descripcion), $payment->total);
+            $this->printer->keyValueText(strtoupper($payment['descripcion']), $payment['total']);
         }
 
         $this->printer->lineSplitter('=');

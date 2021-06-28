@@ -17,7 +17,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace FacturaScripts\Plugins\PrintTicket\Lib\Ticket\Template;
+namespace FacturaScripts\Plugins\PrintTicket\Lib\Ticket\Builder;
 
 
 use FacturaScripts\Plugins\Servicios\Model\ServicioAT;

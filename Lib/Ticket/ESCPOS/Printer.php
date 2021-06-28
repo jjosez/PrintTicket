@@ -58,7 +58,7 @@ class Printer
         return sprintf('%' . $align . $width . 's', $text);
     }
 
-    public function keyValueText(string $label, string $value, string $align = '')
+    public function keyValueText(?string $label, ?string $value, string $align = '')
     {
         $text = $label;
         $width = $this->width - strlen($label);

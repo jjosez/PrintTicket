@@ -21,9 +21,9 @@ namespace FacturaScripts\Plugins\PrintTicket\Lib;
 
 use FacturaScripts\Core\Base\Translator;
 use FacturaScripts\Dinamic\Model\Ticket;
-use FacturaScripts\Plugins\PrintTicket\Lib\Ticket\Template\AbstractTicketBuilder;
+use FacturaScripts\Plugins\PrintTicket\Lib\Ticket\Builder\AbstractTicketBuilder;
 
-class SalesTicket
+class PrintingService
 {
     /**
      * @var
