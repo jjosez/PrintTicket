@@ -19,8 +19,6 @@
 namespace FacturaScripts\Plugins\PrintTicket\Controller;
 
 use FacturaScripts\Core\Base\Controller;
-use FacturaScripts\Dinamic\Model\Ticket;
-use FacturaScripts\Plugins\PrintTicket\Lib\CustomerServiceTicket;
 use FacturaScripts\Plugins\PrintTicket\Lib\SalesTicket;
 use FacturaScripts\Plugins\PrintTicket\Lib\Ticket\Template\SalesTicketBuilder;
 use FacturaScripts\Plugins\PrintTicket\Lib\Ticket\Template\ServiceTicketBuilder;
