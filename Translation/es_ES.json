@@ -2,5 +2,7 @@
     "print-ticket-settings": "Configuracion de tickets",
     "footer-custom-lines": "Lineas de pie",
     "header-custom-lines" : "Lineas de encabezado",
-    "common-ticket-settings" : "Configuracion General"
+    "common-ticket-settings" : "Configuracion General",
+    "printing-ticket-comand": "Imprimiendo ticket %ticket%.<img class='d-none' src='http://localhost:8089?documento=%code%'/>",
+    "printing-ticket": "Imprimiendo %ticket%."
 }

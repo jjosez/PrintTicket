@@ -61,7 +61,7 @@ class PrintTicket extends Controller
         }
 
         if ('Servicio' === $modelName) {
-            $this->saveServicePrintJob($code);
+            $this->sendServicePrintJob($code);
         } else {
             $this->sendPrintJob($modelName, $code, $gift);
         }
@@ -79,10 +79,10 @@ class PrintTicket extends Controller
         $salesTicket = new PrintingService($ticketBuilder);
         $salesTicket->savePrintJob();
 
-        echo $salesTicket->getMessage();
+        echo $salesTicket->getResponse();
     }
 
-    protected function saveServicePrintJob($code)
+    protected function sendServicePrintJob($code)
     {
         $servicio = (new ServicioAT())->get($code);
 
@@ -93,7 +93,7 @@ class PrintTicket extends Controller
         $serviceTicket = new PrintingService($ticketBuilder);
         $serviceTicket->savePrintJob();
 
-        echo $serviceTicket->getMessage();
+        echo $serviceTicket->getResponse();
     }
 
     private function getDefaulTicketWidth(): int

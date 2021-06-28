@@ -26,15 +26,23 @@ use FacturaScripts\Plugins\PrintTicket\Lib\Ticket\Builder\AbstractTicketBuilder;
 class PrintingService
 {
     /**
-     * @var
+     * @var AbstractTicketBuilder
+     */
+    protected $builder;
+
+    /**
+     * @var string
      */
     protected $message;
 
-    protected $ticketBuilder;
+    /**
+     * @var string
+     */
+    protected $jsonResponse;
 
     public function __construct(AbstractTicketBuilder $ticketBuilder)
     {
-        $this->ticketBuilder = $ticketBuilder;
+        $this->builder = $ticketBuilder;
     }
 
     /**
@@ -45,21 +53,27 @@ class PrintingService
         return $this->message;
     }
 
+    public function getResponse(): string
+    {
+        return $this->jsonResponse;
+    }
+
     public function savePrintJob(): void
     {
         $ticket = new Ticket();
 
-        $ticket->coddocument = $this->ticketBuilder->getTicketType();
-        $ticket->text = $this->ticketBuilder->getResult();
+        $ticket->coddocument = $this->builder->getTicketType();
+        $ticket->text = $this->builder->getResult();
 
         if (false === $ticket->save()) {
-            $this->message = 'Error al imprimir el ticket';
+            $this->setErrorMessage();
         }
 
         $this->setMessage($ticket->coddocument);
+        $this->setResponse($ticket->coddocument);
     }
 
-    private function setMessage(string $code): void
+    private function setResponse(string $code): void
     {
         $printMessage = (new Translator())->trans('printing');
         $documentType = (new Translator())->trans($code);
@@ -70,6 +84,23 @@ class PrintingService
             "code" => $code
         ];
 
-        $this->message = json_encode($response);
+        $this->jsonResponse = json_encode($response);
+    }
+
+    private function setMessage(string $code): void
+    {
+        $documentType = (new Translator())->trans($code);
+
+        $values = [
+            '%ticket%' => $documentType,
+            '%code%' => $code
+        ];
+
+        $this->message = (new Translator())->trans('printing-ticket-comand', $values);
+    }
+
+    private function setErrorMessage()
+    {
+        $this->message = (new Translator())->trans('error-printing-ticket');
     }
 }

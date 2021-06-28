@@ -1,8 +1,10 @@
 {
     "common-ticket-settings" : "Configuracion General",
+    "error-printing-ticket" : "Error al imprimir el ticket",
     "footer-custom-lines": "Lineas de pie",
     "header-custom-lines" : "Lineas de encabezado",
     "print-ticket-line-lenght": "Número de caracteres",
     "print-ticket-settings": "Configuracion de tickets",
-    "printing" : "Imprimiendo"
+    "printing-ticket-comand": "Imprimiendo ticket %ticket%.<img class='d-none' src='http://localhost:8089?documento=%code%'/>",
+    "printing-ticket": "Imprimiendo %ticket%."
 }
