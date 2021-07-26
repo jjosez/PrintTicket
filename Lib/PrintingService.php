@@ -67,9 +67,10 @@ class PrintingService
 
         if (false === $ticket->save()) {
             $this->setErrorMessage();
+        } else {
+            $this->setMessage($ticket->coddocument);
         }
 
-        $this->setMessage($ticket->coddocument);
         $this->setResponse($ticket->coddocument);
     }
 
