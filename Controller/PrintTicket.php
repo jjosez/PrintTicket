@@ -57,6 +57,7 @@ class PrintTicket extends Controller
         $modelName = $this->request->request->get('documento');
 
         if ('' === $modelName || '' === $code) {
+            echo 'Cant print current ticket';
             return;
         }
 
