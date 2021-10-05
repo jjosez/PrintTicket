@@ -5,14 +5,14 @@ namespace FacturaScripts\Plugins\PrintTicket\Lib\Ticket\Builder;
 
 
 use FacturaScripts\Dinamic\Model\Empresa;
-use FacturaScripts\Dinamic\Model\SesionPOS;
+use FacturaScripts\Dinamic\Model\SesionPuntoVenta;
 
 class CashupTicketBuilder extends AbstractTicketBuilder
 {
     protected $company;
     protected $session;
 
-    public function __construct(SesionPOS $session, Empresa $company, int $width)
+    public function __construct(SesionPuntoVenta $session, Empresa $company, int $width)
     {
         parent::__construct($width);
 
