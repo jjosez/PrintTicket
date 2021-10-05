@@ -62,7 +62,7 @@ class PrintingService
     {
         $ticket = new Ticket();
 
-        $ticket->coddocument = $this->builder->getTicketType();
+        $ticket->coddocument = $this->builder->getTicketType() . rand(10, 99);
         $ticket->text = $this->builder->getResult();
 
         if (false === $ticket->save()) {
@@ -77,7 +77,7 @@ class PrintingService
     private function setResponse(string $code): void
     {
         $printMessage = (new Translator())->trans('printing');
-        $documentType = (new Translator())->trans($code);
+        $documentType = (new Translator())->trans($this->builder->getTicketType());
 
         $response = [
             "message" => $printMessage,
@@ -90,14 +90,7 @@ class PrintingService
 
     private function setMessage(string $code): void
     {
-        $documentType = (new Translator())->trans($code);
-
-        $values = [
-            '%ticket%' => $documentType,
-            '%code%' => $code
-        ];
-
-        $this->message = (new Translator())->trans('printing-ticket-comand', $values);
+        $this->message = (new Translator())->trans('printing-ticket-comand', ['%code%' => $code]);
     }
 
     private function setErrorMessage()

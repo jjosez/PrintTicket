@@ -53,7 +53,7 @@ class PrintTicket extends Controller
         $this->setTemplate(false);
 
         $code = $this->request->request->get('code');
-        $gift = $this->request->request->get('gift');
+        $gift = $this->request->request->get('gift', false);
         $modelName = $this->request->request->get('documento');
 
         if ('' === $modelName || '' === $code) {

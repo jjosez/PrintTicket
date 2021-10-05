@@ -19,14 +19,14 @@
                 </div>
                 <div class="col-6">
                     <div class="form-group">
-                        <label>{{ i18n.trans('ticket-begin-white-space') }}</label>
+                        <label>{{ i18n.trans('ticket-top-white-space') }}</label>
                         {% set space = appSettings.get('ticket', 'ticket-top-space', 2) %}
                         <input type="text" name="top-space" value="{{ space }}" class="form-control">
                     </div>
                 </div>
                 <div class="col-6">
                     <div class="form-group">
-                        <label>{{ i18n.trans('ticket-end-white-space') }}</label>
+                        <label>{{ i18n.trans('ticket-bottom-white-space') }}</label>
                         {% set space = appSettings.get('ticket', 'ticket-bottom-space', 2) %}
                         <input type="text" name="bottom-space" value="{{ space }}" class="form-control">
                     </div>
