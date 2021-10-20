@@ -1,16 +1,4 @@
-const query = window.location.search;
-const params = new URLSearchParams(query);
-const code = params.get('code');
-
-function printTicketDialog() {
-    (async() => {
-        let printModule = await import('./PrintTicket.js');
-        printModule.print('Servicio', code);
-    })();
+async function printTicketDialog() {
+  const { print } = await import('./PrintTicket.js');
+  print('Servicio');
 }
-
-$(function () {
-    if (!code) {
-        $('#printTicketBtn').attr('disabled', true);
-    }
-});

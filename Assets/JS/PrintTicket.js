@@ -1,4 +1,16 @@
-export function print(document, code) {
+const query = window.location.search;
+const params = new URLSearchParams(query);
+const code = params.get('code');
+
+const message = [
+    '<div class="row">',
+    '<div class="col-12 text-center">',
+    '<h1><i class="fas fa-print" aria-hidden="true"></i></h1>',
+    '</div>',
+    '</div>'
+].join("\n");
+
+export function print(document) {
     bootbox.dialog({
         message: '<h4>¿Qué típo de impresión deseas?</h4>',
         size: 'medium',
@@ -6,16 +18,16 @@ export function print(document, code) {
             gift: {
                 label: '<i class="fas fa-gift"></i> Regalo',
                 className: 'btn-warning',
-                callback: function(){
-                    sendPrintJob(this, code, document, 1);
+                callback: function () {
+                    getPrintJob(this, code, document, 1);
                     return false;
                 }
             },
             normal: {
                 label: '<i class="fas fa-print"></i> Normal',
                 className: 'btn-primary',
-                callback: function(){
-                    sendPrintJob(this, code, document, 0);
+                callback: function () {
+                    getPrintJob(this, code, document, 0);
                     return false;
                 }
             }
@@ -23,37 +35,23 @@ export function print(document, code) {
     });
 }
 
-function sendPrintJob(dialog, code, document, gift = 0) {
-    const data = {
-        code: code,
-        documento: document,
-        gift: gift
-    };
+function getPrintJob(dialog, code, document, gift = 0) {
+    const data = new FormData();
 
-    $.ajax({
-        type: 'POST',
-        url: 'PrintTicket',
-        dataType: 'json',
-        data: data,
-        success: function (response) {
-            var html = [
-                '<div class="row">',
-                    '<div class="col-12 text-center">',
-                        '<h1><i class="fas fa-print" aria-hidden="true"></i></h1>',
-                        '<h4><span>' + response.message + '</span></h4>',
-                        '<h4><span>' + response.document + '</span></h4>',
-                    '</div>',
-                '</div>',
-                '<div class="d-none">',
-                    '<img src="http://localhost:8089?documento=' + response.code + '" alt="remote-printer"/>',
-                '</div>'
-            ].join("\n");
+    data.set('code', code);
+    data.set('documento', document);
+    data.set('gift', gift);
 
-            dialog.find('.bootbox-body').html(html);
+    const options = { method: 'POST', body: data };
 
-            setTimeout(function(){
+    fetch('PrintTicket', options)
+        .then(response => response.json())
+        .then(data => {
+            setTimeout(function () {
                 dialog.modal('hide');
-            }, 400);
-        }
-    });
+            }, 200);
+
+            return fetch('http://localhost:8089?documento=' + data.code);
+        })
+        .catch(err => console.log('No se pudo conectar al servicio de impresion'));
 }
