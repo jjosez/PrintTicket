@@ -2,14 +2,6 @@ const query = window.location.search;
 const params = new URLSearchParams(query);
 const code = params.get('code');
 
-const message = [
-    '<div class="row">',
-    '<div class="col-12 text-center">',
-    '<h1><i class="fas fa-print" aria-hidden="true"></i></h1>',
-    '</div>',
-    '</div>'
-].join("\n");
-
 export function print(document) {
     bootbox.dialog({
         message: '<h4>¿Qué típo de impresión deseas?</h4>',
