@@ -5,7 +5,7 @@
     "header-custom-lines" : "Lineas de encabezado",
     "print-ticket-line-lenght": "Número de caracteres",
     "print-ticket-settings": "Configuracion de tickets",
-    "printing-ticket-comand": "Imprimiendo ticket.<img class='d-none' src='http://localhost:8089?documento=%code%'/>",
+    "printing-ticket-comand": "Imprimiendo ticket.<img class='d-none' src='http://localhost:'%port%'?documento=%code%'/>",
     "printing-ticket": "Imprimiendo %ticket%.",
     "ticket-top-white-space": "Espacio en blanco superior",
     "ticket-bottom-white-space": "Espacio en blanco inferior"

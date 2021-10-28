@@ -25,6 +25,8 @@ use FacturaScripts\Plugins\PrintTicket\Lib\Ticket\Builder\AbstractTicketBuilder;
 
 class PrintingService
 {
+    const PRINTER_PORT = '8089';
+
     /**
      * @var AbstractTicketBuilder
      */
@@ -90,7 +92,10 @@ class PrintingService
 
     private function setMessage(string $code): void
     {
-        $this->message = (new Translator())->trans('printing-ticket-comand', ['%code%' => $code]);
+        $this->message = (new Translator())->trans(
+            'printing-ticket-comand',
+            ['%code%' => $code, '%port%' => self::PRINTER_PORT]
+        );
     }
 
     private function setErrorMessage()
