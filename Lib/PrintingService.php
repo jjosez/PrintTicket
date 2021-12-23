@@ -25,7 +25,7 @@ use FacturaScripts\Plugins\PrintTicket\Lib\Ticket\Builder\AbstractTicketBuilder;
 
 class PrintingService
 {
-    const PRINTER_PORT = '8089';
+    const PRINTER_PORT = 8089;
 
     /**
      * @var AbstractTicketBuilder
