@@ -53,6 +53,7 @@ class SalesTicketBuilder extends AbstractTicketBuilder
 
         $this->printer->lineSplitter();
         $this->printer->text($company->nombrecorto, true, true);
+        $this->printer->text($company->nombre, true, true);
         $this->printer->bigText($company->direccion, true, true);
 
         if ($company->telefono1) {
