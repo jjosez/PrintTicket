@@ -25,12 +25,12 @@ class Ticket extends Base\ModelClass
         return parent::install();
     }
 
-    public static function primaryColumn()
+    public static function primaryColumn(): string
     {
         return 'coddocument';
     }
 
-    public static function tableName()
+    public static function tableName(): string
     {
         return 'tickets';
     }

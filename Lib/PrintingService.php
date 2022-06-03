@@ -60,11 +60,14 @@ class PrintingService
         return $this->jsonResponse;
     }
 
+    /**
+     * @throws \Exception
+     */
     public function savePrintJob(): void
     {
         $ticket = new Ticket();
 
-        $ticket->coddocument = $this->builder->getTicketType() . rand(10, 99);
+        $ticket->coddocument = $this->builder->getTicketType() . bin2hex(random_bytes(5));
         $ticket->text = $this->builder->getResult();
 
         if (false === $ticket->save()) {

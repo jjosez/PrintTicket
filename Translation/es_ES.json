@@ -3,6 +3,7 @@
     "error-printing-ticket" : "Error al imprimir el ticket",
     "footer-custom-lines": "Lineas de pie",
     "header-custom-lines" : "Lineas de encabezado",
+    "print-ticket": "Imprimir ticket",
     "print-ticket-line-lenght": "Número de caracteres",
     "print-ticket-settings": "Configuracion de tickets",
     "printing-ticket-comand": "Imprimiendo ticket.<img class='d-none' src='http://localhost:%port%?documento=%code%'/>",

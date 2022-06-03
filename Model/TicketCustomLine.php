@@ -52,12 +52,12 @@ class TicketCustomLine extends Base\ModelClass
         return $result;
     }
 
-    public static function primaryColumn()
+    public static function primaryColumn(): string
     {
         return 'idlinea';
     }
 
-    public static function tableName()
+    public static function tableName(): string
     {
         return 'ticketcustomlines';
     }

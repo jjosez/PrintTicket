@@ -3,6 +3,11 @@ const params = new URLSearchParams(query);
 const code = params.get('code');
 
 export function print(document) {
+    console.log('Codeede', code)
+    if (code === undefined || code === null) {
+        return;
+    }
+
     bootbox.dialog({
         message: '<h4>¿Qué típo de impresión deseas?</h4>',
         size: 'medium',
