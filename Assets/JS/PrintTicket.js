@@ -3,7 +3,6 @@ const params = new URLSearchParams(query);
 const code = params.get('code');
 
 export function print(document) {
-    console.log('Codeede', code)
     if (code === undefined || code === null) {
         return;
     }
@@ -39,7 +38,7 @@ function getPrintJob(dialog, code, document, gift = 0) {
     data.set('documento', document);
     data.set('gift', gift);
 
-    const options = { method: 'POST', body: data };
+    const options = {method: 'POST', body: data};
 
     fetch('PrintTicket', options)
         .then(response => response.json())
@@ -48,7 +47,14 @@ function getPrintJob(dialog, code, document, gift = 0) {
                 dialog.modal('hide');
             }, 200);
 
-            return fetch('http://localhost:8089?documento=' + data.code);
+            return sendPrintJob(data);
         })
         .catch(err => console.log('No se pudo conectar al servicio de impresion'));
+}
+
+async function sendPrintJob({code}) {
+    var params = new URLSearchParams({"documento": code});
+
+    await fetch('http://localhost:8089?' + params, {mode: 'no-cors', method: 'GET'})
+        .catch(error => console.log('Error printing.', error.message));
 }
