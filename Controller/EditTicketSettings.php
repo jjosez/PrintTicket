@@ -28,7 +28,10 @@ use FacturaScripts\Core\Lib\ExtendedController\PanelController;
  */
 class EditTicketSettings extends PanelController
 {
-    public function getPageData()
+    /**
+     * @return array
+     */
+    public function getPageData(): array
     {
         $pagedata = parent::getPageData();
         $pagedata['title'] = 'print-ticket-settings';

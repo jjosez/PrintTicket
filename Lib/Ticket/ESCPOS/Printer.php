@@ -81,6 +81,14 @@ class Printer
         $this->output .= $barcode;
     }
 
+    public function logo(string $logoPath)
+    {
+        $logo = '';
+        $logo .= chr(27) . chr(42) . chr(48);
+
+        $this->output .= $logo;
+    }
+
     public function cut()
     {
         $this->output .= '[[cut]]';

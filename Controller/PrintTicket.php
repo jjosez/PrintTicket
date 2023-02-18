@@ -36,7 +36,7 @@ class PrintTicket extends Controller
 
     public $document;
 
-    public function getPageData()
+    public function getPageData(): array
     {
         $pageData = parent::getPageData();
         $pageData['title'] = 'Configuracion Tickets';
@@ -52,12 +52,12 @@ class PrintTicket extends Controller
         parent::privateCore($response, $user, $permissions);
         $this->setTemplate(false);
 
-        $code = $this->request->request->get('code');
-        $gift = $this->request->request->get('gift', false);
-        $modelName = $this->request->request->get('documento');
+        $code = $this->request->request->get('codigo');
+        $gift = $this->request->request->get('regalo', false);
+        $modelName = $this->request->request->get('tipo');
 
-        if ('' === $modelName || '' === $code) {
-            echo 'Cant print current ticket';
+        if (true === empty($modelName) || true === empty($code)) {
+            echo 'Not valid tikcet data';
             return;
         }
 

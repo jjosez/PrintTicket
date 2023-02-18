@@ -19,6 +19,7 @@
 
 namespace FacturaScripts\Plugins\PrintTicket\Lib\Ticket\Builder;
 
+use FacturaScripts\Dinamic\Model\AttachedFile;
 use FacturaScripts\Dinamic\Model\TicketCustomLine;
 use FacturaScripts\Plugins\PrintTicket\Lib\Ticket\ESCPOS\Printer;
 
@@ -67,5 +68,16 @@ abstract class AbstractTicketBuilder
     protected function getCustomLines(string $position): array
     {
         return TicketCustomLine::rawFromDocument($this->ticketType, $position);
+    }
+
+    protected function getLogo()
+    {
+        $logoFile = new AttachedFile();
+
+        $logoFilePath = FS_FOLDER . '/Dinamic/Assets/Images/horizontal-logo.png';
+
+        if (!file_exists($logoFilePath)) {
+            return;
+        }
     }
 }

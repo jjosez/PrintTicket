@@ -13,7 +13,7 @@ class EditPedidoCliente
     {
         return function () {
             $this->addButton('main', [
-                'action' => 'printTicketDialog()',
+                'action' => 'ticketPrinterAction()',
                 'color' => 'info',
                 'icon' => 'fas fa-print',
                 'label' => 'print-ticket',

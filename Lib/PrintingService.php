@@ -60,9 +60,7 @@ class PrintingService
         return $this->jsonResponse;
     }
 
-    /**
-     * @throws \Exception
-     */
+
     public function savePrintJob(): void
     {
         $ticket = new Ticket();

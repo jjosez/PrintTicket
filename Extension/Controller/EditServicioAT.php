@@ -7,12 +7,12 @@ use Closure;
 /**
  * @method addButton(string $string, string[] $array)
  */
-class EditFacturaCliente
+class EditServicioAT
 {
     public function createViews(): Closure
     {
         return function () {
-            $this->addButton('main', [
+            $this->addButton($this->getMainViewName(), [
                 'action' => 'ticketPrinterAction()',
                 'color' => 'info',
                 'icon' => 'fas fa-print',

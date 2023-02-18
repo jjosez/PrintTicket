@@ -1,4 +1,5 @@
-async function printTicketDialog() {
-  const { print } = await import('./PrintTicket.js');
-  print('FacturaCliente');
+async function ticketPrinterAction() {
+    const {showPrinterDialog} = await import('./TicketPrinter.js');
+
+    showPrinterDialog('FacturaCliente');
 }

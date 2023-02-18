@@ -88,6 +88,10 @@ class ServiceTicketBuilder extends AbstractTicketBuilder
             $this->printer->lineBreak();
             $this->printer->text('Descripcion: ');
             $this->printer->bigText($trabajo->descripcion);
+
+
+            $this->printer->keyValueText('Cantidad:', $trabajo->cantidad);
+            $this->printer->keyValueText('Precio:', $trabajo->precio);
             $this->printer->lineSplitter();
         }
     }

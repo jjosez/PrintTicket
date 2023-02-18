@@ -15,6 +15,7 @@ class Init extends InitClass
         $this->loadExtension(new Extension\Controller\EditFacturaCliente());
         $this->loadExtension(new Extension\Controller\EditPedidoCliente());
         $this->loadExtension(new Extension\Controller\EditPresupuestoCliente());
+        $this->loadExtension(new Extension\Controller\EditServicioAT());
     }
 
     public function update()
