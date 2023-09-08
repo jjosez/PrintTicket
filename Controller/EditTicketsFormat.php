@@ -26,7 +26,7 @@ use FacturaScripts\Core\Lib\ExtendedController\PanelController;
  *
  * @author Juan José Prieto Dzul <juanjoseprieto88@gmail.com>
  */
-class EditTicketSettings extends PanelController
+class EditTicketsFormat extends PanelController
 {
     /**
      * @return array
@@ -34,7 +34,7 @@ class EditTicketSettings extends PanelController
     public function getPageData(): array
     {
         $pagedata = parent::getPageData();
-        $pagedata['title'] = 'print-ticket-settings';
+        $pagedata['title'] = 'ticket-settings';
         $pagedata['menu'] = 'admin';
         $pagedata['icon'] = 'fas fa-print';
 
@@ -43,75 +43,51 @@ class EditTicketSettings extends PanelController
 
     protected function createViews()
     {
-        $this->setTemplate('EditTicketSettings');
+        //$this->setTemplate('EditTicketSettings');
+        $this->createViewPrintFormat();
+        $this->createViewCustomFooterLines();
+        $this->createViewCustomHeadLines();
 
-        $this->addHtmlView('TicketSettings', 'CommonTicketSettings', 'TicketCustomLine', 'common-ticket-settings', 'fas fa-print');
-        $this->addEditListView('EditTicketHeadLine', 'TicketCustomLine', 'header-custom-lines', 'fas fa-list-ul');
-        $this->addEditListView('EditTicketFootLine', 'TicketCustomLine', 'footer-custom-lines', 'fas fa-list-ul');
-
-        $this->setSettings('TicketSettings', 'btnNew', false);
+        //$this->setSettings('TicketSettings', 'btnNew', false);
     }
 
-    protected function execAfterAction($action)
+    protected function createViewCustomFooterLines(string $viewName = 'EditTicketFootLine')
     {
-        switch ($action) {
-            case 'save-settings':
-                $this->saveSettings();
-                break;
+        $this->addEditListView($viewName, 'TicketCustomLine', 'footer-custom-lines', 'fas fa-file-alt');
+    }
 
-            default:
-                parent::execAfterAction($action);
-        }
+    protected function createViewCustomHeadLines(string $viewName = 'EditTicketHeadLine')
+    {
+        $this->addEditListView($viewName, 'TicketCustomLine', 'header-custom-lines', 'fas fa-file-alt');
+
+    }
+
+    protected function createViewPrintFormat(string $viewName = 'ListFormatoTicket')
+    {
+        $this->addListView($viewName, 'FormatoTicket', 'tickets-formats', 'fas fa-print');
     }
 
     protected function loadData($viewName, $view)
     {
         $order = ['documento' => 'ASC', 'idlinea' => 'DESC'];
+
         switch ($viewName) {
             case 'EditTicketFootLine':
                 $where = [new DataBaseWhere('posicion', 'footer')];
                 $view->loadData('', $where, $order);
-                $this->hasData = true;
                 break;
 
             case 'EditTicketHeadLine':
                 $where = [new DataBaseWhere('posicion', 'header')];
                 $view->loadData('', $where, $order);
                 break;
-            case 'TicketSettings':
+            case 'ListFormatoTicket':
+                $view->loadData();
                 $this->hasData = true;
                 break;
 
             default:
                 break;
         }
-    }
-
-    private function saveSettings()
-    {
-        $settings = $this->toolBox()->appSettings();
-
-        $footerText = $this->request->request->get('footertext');
-        if ($footerText) {
-            $settings->set('ticket', 'footertext', $footerText);
-        }
-
-        $lineLength = $this->request->request->get('linelength');
-        if ($lineLength) {
-            $settings->set('ticket', 'linelength', $lineLength);
-        }
-
-        $logocommand = $this->request->request->get('logocommand');
-        if ($logocommand) {
-            $settings->set('ticket', 'logocommand', $logocommand);
-        }
-
-        $topSpace = $this->request->request->get('top-space') ?? 1;
-        $settings->set('ticket', 'ticket-top-space', $topSpace);
-
-        $bottomSpace = $this->request->request->get('bottom-space') ?? 1;
-        $settings->set('ticket', 'ticket-bottom-space', $bottomSpace);
-
-        $settings->save();
     }
 }

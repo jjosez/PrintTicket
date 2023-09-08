@@ -1,10 +1,13 @@
 <?php
+
 namespace FacturaScripts\Plugins\PrintTicket;
 
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Base\InitClass;
-use FacturaScripts\Dinamic\Model\ApiKey;
 use FacturaScripts\Dinamic\Model\ApiAccess;
+use FacturaScripts\Dinamic\Model\ApiKey;
+
+require_once __DIR__ . '/vendor/autoload.php';
 
 class Init extends InitClass
 {
@@ -19,6 +22,18 @@ class Init extends InitClass
     }
 
     public function update()
+    {
+        $this->generateApiKey();
+
+        $format = new Model\FormatoTicket();
+
+        if (false === $format->loadFromCode(1)) {
+            $format->nombre = 'General';
+            $format->save();
+        }
+    }
+
+    private function generateApiKey()
     {
         $apiKey = new ApiKey();
         $where = [new DataBaseWhere('description', 'remoteprinter')];

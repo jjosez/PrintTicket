@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Document   : formatos_tickets.xml
+    Author     : Juan José Prieto Dzul
+    Description:
+        Structure for the formatos_tickets table.
+-->
+<table>
+    <column>
+        <name>ancho</name>
+        <type>integer</type>
+    </column>
+    <column>
+        <name>barcode</name>
+        <type>character varying(10)</type>
+    </column>
+    <column>
+        <name>codserie</name>
+        <type>character varying(4)</type>
+    </column>
+    <column>
+        <name>cuerpo_fontsize</name>
+        <type>integer</type>
+    </column>
+    <column>
+        <name>formato_precio</name>
+        <type>integer</type>
+    </column>
+    <column>
+        <name>id</name>
+        <type>serial</type>
+        <null>NO</null>
+    </column>
+    <column>
+        <name>idempresa</name>
+        <type>integer</type>
+    </column>
+    <column>
+        <name>idlogo</name>
+        <type>integer</type>
+    </column>
+    <column>
+        <name>nombre</name>
+        <type>character varying(30)</type>
+        <null>NO</null>
+    </column>
+    <column>
+        <name>tipodocumento</name>
+        <type>character varying(30)</type>
+    </column>
+    <column>
+        <name>titulo_fontsize</name>
+        <type>integer</type>
+    </column>
+    <column>
+        <name>titulo_negrita</name>
+        <type>boolean</type>
+    </column>
+    <constraint>
+        <name>formatos_ticket_pkey</name>
+        <type>PRIMARY KEY (id)</type>
+    </constraint>
+    <constraint>
+        <name>ca_formatos_ticket_series</name>
+        <type>FOREIGN KEY (codserie) REFERENCES series (codserie) ON DELETE SET NULL ON UPDATE CASCADE</type>
+    </constraint>
+    <constraint>
+        <name>ca_formatos_ticket_empresas</name>
+        <type>FOREIGN KEY (idempresa) REFERENCES empresas (idempresa) ON DELETE SET NULL ON UPDATE CASCADE</type>
+    </constraint>
+    <constraint>
+        <name>ca_formatos_ticket_attached_files</name>
+        <type>FOREIGN KEY (idlogo) REFERENCES attached_files (idfile) ON DELETE SET NULL ON UPDATE CASCADE</type>
+    </constraint>
+</table>

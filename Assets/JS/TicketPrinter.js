@@ -7,48 +7,55 @@ export function showPrinterDialog(documentName) {
         return;
     }
 
-    bootbox.dialog({
-        message: '<h4>¿Qué típo de impresión deseas?</h4>',
-        size: 'medium',
-        buttons: {
-            gift: {
-                label: '<i class="fas fa-gift"></i> Regalo',
-                className: 'btn-warning',
-                callback: function () {
-                    setPrintRequest({documentCode: code, documentName: documentName});
-                }
-            },
-            normal: {
-                label: '<i class="fas fa-print"></i> Normal',
-                className: 'btn-primary',
-                callback: function () {
-                    setPrintRequest({documentCode: code, documentName: documentName}, 1);
-                }
-            }
-        }
-    });
-}
-
-function setPrintRequest({documentCode, documentName}, asGift = 0) {
     const data = new FormData();
-
-    data.append('codigo', documentCode);
-    data.append('tipo', documentName);
-    data.append('regalo', asGift);
+    data.append('action', 'get-formats')
+    data.append('tipo-documento', documentName);
 
     fetch('PrintTicket', {method: 'POST', body: data})
         .then(response => response.json())
         .then(data => {
-            return requestPrinterService(data);
+            for (const item of data) {
+                item.label = item.nombre;
+                item.className = 'btn-primary btn-block';
+                item.callback = function () {
+                    printRequest({
+                        documentCode: code,
+                        documentFormat: item.id,
+                        documentName: documentName
+                    });
+                }
+            }
+
+            bootbox.dialog({
+                message: '<h4>¿Qué típo de impresión deseas?</h4>',
+                size: 'medium',
+                buttons: data
+            });
         })
-        .catch(error => showPrintMessage('No se pudo conectar al servicio de impresion: ' + error));
+        .catch(error => showPrintMessage('Error al obtener los formatos de impresion: ' + error));
+}
+
+function printRequest({documentCode, documentFormat, documentName}) {
+    const data = new FormData();
+
+    data.append('action', 'print-document');
+    data.append('codigo', documentCode);
+    data.append('formato', documentFormat);
+    data.append('tipo', documentName);
+
+    fetch('PrintTicket', {method: 'POST', body: data})
+        .then(response => response.json())
+        .then(data => {
+            return printerServiceRequest(data);
+        })
+        .catch(error => showPrintMessage('No se pudo conectar al servicio de impresion: '  + error));
 }
 
 function showPrintMessage(message) {
     bootbox.alert({title: 'Error', message: message});
 }
 
-async function requestPrinterService({code}) {
+async function printerServiceRequest({code}) {
     let params = new URLSearchParams({"documento": code});
 
     await fetch('http://localhost:8089?' + params, {

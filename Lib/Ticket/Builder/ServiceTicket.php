@@ -16,83 +16,85 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 namespace FacturaScripts\Plugins\PrintTicket\Lib\Ticket\Builder;
 
-
+use FacturaScripts\Dinamic\Model\FormatoTicket;
 use FacturaScripts\Plugins\Servicios\Model\ServicioAT;
+use Mike42\Escpos\PrintConnectors\DummyPrintConnector;
 
-class ServiceTicketBuilder extends AbstractTicketBuilder
+class ServiceTicket extends AbstractTicketBuilder
 {
+    /**
+     * @var ServicioAT
+     */
     protected $servicio;
 
-    public function __construct(ServicioAT $servicio, int $width, bool $hidePrices = false)
+    public function __construct(ServicioAT $servicio, ?FormatoTicket $formato)
     {
-        parent::__construct($width);
+        parent::__construct($formato);
 
         $this->servicio = $servicio;
-        $this->hidePrices = $hidePrices;
         $this->ticketType = 'Servicio';
     }
 
     protected function buildHeader(): void
     {
-        $this->printer->lineBreak();
         $company = $this->servicio->getCompany();
 
-        $this->printer->lineSplitter();
-        $this->printer->text($company->nombrecorto, true, true);
-        $this->printer->bigText($company->direccion, true, true);
+        $this->printer->lineBreak();
+        $this->setTitleFontStyle();
 
-        if ($company->telefono1) {
-            $this->printer->text('TEL: ' . $company->telefono1, true, true);
-        }
+        $this->printLogo();
+        $this->printer->textCentered($company->nombrecorto);
+        $this->printer->textCentered($company->direccion);
+        $this->printer->textCentered($company->telefono1);
+        $this->printer->textCentered($company->cifnif);
 
-        $this->printer->text($company->cifnif, true, true);
-        $this->printer->LineSplitter('=');
+        $this->resetFontStyle();
+        $this->printer->lineSeparator('=');
     }
 
     protected function buildBody(): void
     {
-        $this->printer->keyValueText('Servicio No.', $this->servicio->idservicio);
-        $this->printer->keyValueText('Cliente ', $this->servicio->codcliente);
-        $this->printer->keyValueText('Fecha', $this->servicio->fecha);
-        $this->printer->keyValueText('Hora', $this->servicio->hora);
-        $this->printer->lineSplitter('=');
+        $this->printer->textKeyValue('Servicio No.', $this->servicio->idservicio);
+        $this->printer->textKeyValue('Cliente ', $this->servicio->codcliente);
+        $this->printer->textKeyValue('Fecha', $this->servicio->fecha);
+        $this->printer->textKeyValue('Hora', $this->servicio->hora);
+        $this->printer->lineSeparator('=');
 
         $this->printer->text('Descripcion: ');
-        $this->printer->bigText($this->servicio->descripcion);
+        $this->printer->text($this->servicio->descripcion);
         $this->printer->lineBreak();
 
         $this->printer->text('Observaciones: ');
-        $this->printer->bigText($this->servicio->observaciones);
-        $this->printer->lineSplitter('=');
+        $this->printer->text($this->servicio->observaciones);
+        $this->printer->lineSeparator('=');
 
         $this->buildBodyDetail();
-        $this->printer->lineSplitter('=');
+        $this->printer->lineSeparator('=');
     }
 
     protected function buildBodyDetail(): void
     {
         $this->printer->text('TRABAJOS', true, true);
-        $this->printer->lineSplitter();
+        $this->printer->lineSeparator();
 
         foreach ($this->servicio->getTrabajos() as $trabajo) {
-            $this->printer->keyValueText('Inicio:', $trabajo->fechainicio . ' ' . $trabajo->horainicio);
-            $this->printer->keyValueText('Hasta:', $trabajo->fechafin . ' ' . $trabajo->horafin);
+            $this->printer->textKeyValue('Inicio:', $trabajo->fechainicio . ' ' . $trabajo->horainicio);
+            $this->printer->textKeyValue('Hasta:', $trabajo->fechafin . ' ' . $trabajo->horafin);
 
             $this->printer->lineBreak();
             $this->printer->text('Observaciones: ');
-            $this->printer->bigText($trabajo->observaciones);
+            $this->printer->text($trabajo->observaciones);
 
             $this->printer->lineBreak();
             $this->printer->text('Descripcion: ');
-            $this->printer->bigText($trabajo->descripcion);
+            $this->printer->text($trabajo->descripcion);
 
 
-            $this->printer->keyValueText('Cantidad:', $trabajo->cantidad);
-            $this->printer->keyValueText('Precio:', $trabajo->precio);
-            $this->printer->lineSplitter();
+            $this->printer->textKeyValue('Cantidad:', $trabajo->cantidad);
+            $this->printer->textKeyValue('Precio:', $trabajo->precio);
+            $this->printer->lineSeparator();
         }
     }
 
@@ -114,6 +116,6 @@ class ServiceTicketBuilder extends AbstractTicketBuilder
 
         $this->printer->lineBreak(3);
 
-        return $this->printer->output();
+        return $this->printer->getBuffer();
     }
 }

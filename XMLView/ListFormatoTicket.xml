@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * This file is part of PrintTicket plugin for FacturaScripts
+ * Copyright (C) 2018-2019 Juan José Prieto Dzul <juanjoseprieto88@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ *
+ * Initial description for the controller ListTerminalPOS
+ *
+ * @author Juan José Prieto Dzul <juanjoseprieto88@gmail.com>
+-->
+<view>
+    <columns>
+        <group name="general" numcolumns="12">
+            <column name="name" numcolumns="3" order="100">
+                <widget type="text" fieldname="nombre"/>
+            </column>
+            <column name="doc-type" order="110">
+                <widget type="select" fieldname="tipodocumento" translate="true">
+                    <values title="customer-estimation">PresupuestoCliente</values>
+                    <values title="customer-order">PedidoCliente</values>
+                    <values title="customer-delivery-note">AlbaranCliente</values>
+                    <values title="customer-invoice">FacturaCliente</values>
+                    <values title="supplier-estimation">PresupuestoProveedor</values>
+                    <values title="supplier-order">PedidoProveedor</values>
+                    <values title="supplier-delivery-note">AlbaranProveedor</values>
+                    <values title="supplier-invoice">FacturaProveedor</values>
+                </widget>
+            </column>
+            <column name="company" titleurl="ListEmpresa" order="120">
+                <widget type="select" fieldname="idempresa" icon="fas fa-building" onclick="EditEmpresa">
+                    <values source="empresas" fieldcode="idempresa" fieldtitle="nombrecorto"/>
+                </widget>
+            </column>
+            <column name="serie" titleurl="ListSerie" order="130">
+                <widget type="select" fieldname="codserie" onclick="EditSerie">
+                    <values source="series" fieldcode="codserie" fieldtitle="descripcion"/>
+                </widget>
+            </column>
+            <column name="width" numcolumns="3" order="100">
+                <widget type="number" fieldname="ancho" decimal="0"/>
+            </column>
+            <column name="price-format" numcolumns="3" order="110">
+                <widget type="select" fieldname="formato_precio" translate="true">
+                    <values title="after-tax">1</values>
+                    <values title="before-tax">2</values>
+                    <values title="no-prices">3</values>
+                </widget>
+            </column>
+            <column name="logo" titleurl="ListAttachedFile" description="JPEG, PNG" numcolumns="3" display="none" order="120">
+                <widget type="select" fieldname="idlogo" onclick="EditAttachedFile">
+                    <values source="attached_files" fieldcode="idfile" fieldtitle="filename" fieldfilter="idempresa"/>
+                </widget>
+            </column>
+        </group>
+        <group name="printing" numcolumns="12">
+
+        </group>
+    </columns>
+</view>
+

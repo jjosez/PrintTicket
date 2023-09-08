@@ -12,6 +12,8 @@ class Ticket extends Base\ModelClass
     public $cortarpapel;
     public $name;
 
+    public $text;
+
     public function clear()
     {
         parent::clear();

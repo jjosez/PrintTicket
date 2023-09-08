@@ -13,8 +13,8 @@ class EditAlbaranCliente
     {
         return function () {
             $this->addButton('main', [
-                'action' => 'ticketPrinterAction()',
-                'color' => 'warning',
+                'action' => "ticketPrinterAction()",
+                'color' => 'info',
                 'icon' => 'fas fa-print',
                 'label' => 'print-ticket',
                 'type' => 'js'

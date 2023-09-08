@@ -1,13 +1,23 @@
 {
-    "common-ticket-settings" : "Configuracion General",
-    "error-printing-ticket" : "Error al imprimir el ticket",
+    "after-tax": "Iva incluido",
+    "before-tax": "Precios + Iva",
+    "body-fontsize": "Tamaño de letra en el cuerpo",
+    "common-ticket-settings": "Configuracion General",
+    "error-printing-ticket": "Error al imprimir el ticket",
     "footer-custom-lines": "Lineas de pie",
-    "header-custom-lines" : "Lineas de encabezado",
+    "header-custom-lines": "Lineas de encabezado",
+    "no-prices": "Sin precios",
+    "price-format": "Formato de precios",
     "print-ticket": "Imprimir ticket",
     "print-ticket-line-lenght": "Número de caracteres",
     "print-ticket-settings": "Configuracion de tickets",
-    "printing-ticket-comand": "Imprimiendo ticket.<img class='d-none' src='http://localhost:%port%?documento=%code%'/>",
     "printing-ticket": "Imprimiendo %ticket%.",
+    "printing-ticket-comand": "Imprimiendo ticket.<img class='d-none' src='http://localhost:%port%?documento=%code%'/>",
+    "ticket-bottom-white-space": "Espacio en blanco inferior",
+    "ticket-settings": "Tickets Ajustes",
     "ticket-top-white-space": "Espacio en blanco superior",
-    "ticket-bottom-white-space": "Espacio en blanco inferior"
+    "tickets-format": "Formato del Ticket",
+    "tickets-formats": "Formatos de Tickets",
+    "title-bold-style": "Titulo en negrita",
+    "title-fontsize": "Tamaño de letra en el titulo"
 }
