@@ -8,7 +8,7 @@ export function showPrinterDialog(documentName) {
     }
 
     const data = new FormData();
-    data.append('action', 'get-formats')
+    data.append('action', 'get-ticket-formats')
     data.append('tipo-documento', documentName);
 
     fetch('PrintTicket', {method: 'POST', body: data})
@@ -19,47 +19,81 @@ export function showPrinterDialog(documentName) {
                 item.className = 'btn-primary btn-block';
                 item.callback = function () {
                     printRequest({
-                        documentCode: code,
-                        documentFormat: item.id,
-                        documentName: documentName
+                        documentCode: code, documentFormat: item.id, documentName: documentName
                     });
                 }
             }
 
             bootbox.dialog({
-                message: '<h4>¿Qué típo de impresión deseas?</h4>',
-                size: 'medium',
-                buttons: data
+                message: '<h4>¿Qué típo de impresión deseas?</h4>', size: 'medium', buttons: data
             });
         })
         .catch(error => showPrintMessage('Error al obtener los formatos de impresion: ' + error));
 }
 
-function printRequest({documentCode, documentFormat, documentName}) {
+async function printRequest({documentCode, documentFormat, documentName}) {
     const data = new FormData();
 
-    data.append('action', 'print-document');
     data.append('codigo', documentCode);
     data.append('formato', documentFormat);
     data.append('tipo', documentName);
 
-    fetch('PrintTicket', {method: 'POST', body: data})
+    if (isAndroidUserAgent()) {
+        await printOnAndroid(data);
+        return;
+    }
+
+    await printOnDesktop(data);
+}
+
+async function printOnAndroid(data) {
+    /*var S = "#Intent;scheme=rawbt;";
+    var P = "package=ru.a402d.rawbtprinter;end;";
+
+    var textEncoded = encodeURI(result);*/
+    data.set('action', 'print-mobile-ticket');
+
+    let response = corePrintRequest(data)
+        .then(response => response)
+        .catch(error => showPrintMessage('No se pudo conectar al servicio de impresion: ' + error));
+
+    try {
+        window.location.href = await response.text();
+    } catch (error) {
+        alert(error);
+    }
+}
+
+async function printOnDesktop(data) {
+    data.set('action', 'print-desktop-ticket');
+
+    return corePrintRequest(data)
         .then(response => response.json())
-        .then(data => {
-            return printerServiceRequest(data);
-        })
-        .catch(error => showPrintMessage('No se pudo conectar al servicio de impresion: '  + error));
+        .then(data => printerServiceRequest(data))
+        .catch(error => showPrintMessage('No se pudo conectar al servicio de impresion: ' + error));
+}
+
+async function printerServiceRequest({print_job_id}) {
+    let params = new URLSearchParams({"documento": print_job_id});
+
+    await fetch('http://localhost:8089?' + params, {
+        mode: 'no-cors', method: 'GET'
+    });
+}
+
+function isAndroidUserAgent() {
+    let userAgent = navigator.userAgent.toLowerCase();
+
+    return userAgent.indexOf("android") > -1; //&& ua.indexOf("mobile");
 }
 
 function showPrintMessage(message) {
     bootbox.alert({title: 'Error', message: message});
 }
 
-async function printerServiceRequest({code}) {
-    let params = new URLSearchParams({"documento": code});
+function corePrintRequest(data) {
+    const init = {method: 'POST', body: data};
+    const controllerAddress = 'PrintTicket';
 
-    await fetch('http://localhost:8089?' + params, {
-        mode: 'no-cors',
-        method: 'GET'
-    });
+    return fetch(controllerAddress, init);
 }

@@ -149,20 +149,6 @@ abstract class AbstractTicketBuilder
         $this->printer->logo($logo->path);
     }
 
-    /*protected function printLogo()
-    {
-        $logo = new AttachedFile();
-        $logoFilePath =  FS_FOLDER . '/' . 'Dinamic/Assets/Images/img.png';
-
-        echo $logoFilePath;
-
-        if (!file_exists($logoFilePath)) {
-            return;
-        }
-
-        $this->printer->logo($logoFilePath);
-    }*/
-
     protected function isValidLogoFile(?string $path): bool
     {
         if (false === file_exists($path)) {

@@ -2,6 +2,7 @@
 
 namespace FacturaScripts\Plugins\PrintTicket;
 
+use FacturaScripts\Core\Base\AjaxForms\SalesHeaderHTML;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
 use FacturaScripts\Core\Base\InitClass;
 use FacturaScripts\Dinamic\Model\ApiAccess;
@@ -19,6 +20,8 @@ class Init extends InitClass
         $this->loadExtension(new Extension\Controller\EditPedidoCliente());
         $this->loadExtension(new Extension\Controller\EditPresupuestoCliente());
         $this->loadExtension(new Extension\Controller\EditServicioAT());
+
+        //SalesHeaderHTML::addMod(new Mod\SalesHeaderHTMLMod());
     }
 
     public function update()

@@ -27,6 +27,11 @@ class Ticket extends Base\ModelClass
         return parent::install();
     }
 
+    public function setPrintCode(string $ticketType = '')
+    {
+        $this->coddocument = $ticketType . bin2hex(random_bytes(5));
+    }
+
     public static function primaryColumn(): string
     {
         return 'coddocument';

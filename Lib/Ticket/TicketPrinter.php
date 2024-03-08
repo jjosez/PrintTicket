@@ -6,7 +6,6 @@ use FacturaScripts\Core\Base\ToolBox;
 use Mike42\Escpos\EscposImage;
 use Mike42\Escpos\PrintConnectors\DummyPrintConnector;
 use Mike42\Escpos\PrintConnectors\PrintConnector;
-use Mike42\Escpos\PrintConnectors\RawbtPrintConnector;
 use Mike42\Escpos\Printer;
 
 class TicketPrinter
@@ -32,7 +31,6 @@ class TicketPrinter
 
     public function __construct(int $width)
     {
-        //$this->connector = new RawbtPrintConnector();
         $this->connector = new DummyPrintConnector();
         $this->printer = new Printer($this->connector);
         $this->width = $width;
@@ -166,11 +164,11 @@ class TicketPrinter
         $width = (int) ($this->width / 2);
 
         $key = ToolBox::utils()::normalize($key);
-        $text = str_pad($key, $width, ' ', $keyAlign);
+        $text = str_pad($key ?? '', $width, ' ', $keyAlign);
         $this->printer->text(ToolBox::utils()::normalize($text));
 
         $value = ToolBox::utils()::normalize($value);
-        $text = str_pad($value, $width, ' ', $valueAlign);
+        $text = str_pad($value ?? '', $width, ' ', $valueAlign);
         $this->printer->text(ToolBox::utils()::normalize($text));
 
         $this->lineBreak();

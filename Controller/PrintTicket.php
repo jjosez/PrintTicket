@@ -20,12 +20,10 @@
 namespace FacturaScripts\Plugins\PrintTicket\Controller;
 
 use FacturaScripts\Core\Base\Controller;
-use FacturaScripts\Dinamic\Model\Base\BusinessDocument;
+use FacturaScripts\Core\Model\Base\SalesDocument;
 use FacturaScripts\Dinamic\Model\FormatoTicket;
 use FacturaScripts\Plugins\PrintTicket\Lib\PrintingService;
 use FacturaScripts\Plugins\PrintTicket\Lib\Ticket\Builder\SalesTicket;
-use FacturaScripts\Plugins\PrintTicket\Lib\Ticket\Builder\ServiceTicket;
-use FacturaScripts\Plugins\Servicios\Model\ServicioAT;
 
 /**
  * Controller to generate a receipt from BusinessDocument Model.
@@ -64,15 +62,9 @@ class PrintTicket extends Controller
 
         if (true === empty($modelName) || true === empty($code)) {
             echo 'Not valid tikcet data';
-            return;
         }
 
-        if ('Servicio' === $modelName) {
-            $this->sendServicePrintJob($code);
-            return;
-        }
-
-        $this->sendPrintJob($modelName, $code, false);
+        //$this->sendPrintJob($modelName, $code, false);
     }
 
     /**
@@ -82,65 +74,49 @@ class PrintTicket extends Controller
     protected function execAction(string $action): bool
     {
         switch ($action) {
-            case 'get-formats':
-                $this->response->setContent(json_encode($this->getFormatFromDocument()));
+            case 'get-ticket-formats':
+                $this->getTicketFormats();
                 return true;
-            case 'print-document':
-                $this->newPrintJob();
+            case 'print-mobile-ticket':
+                $this->printFromMobile();
+                return true;
+            case 'print-desktop-ticket':
+                $this->printFromDesktop();
                 return true;
             default:
                 return false;
         }
     }
 
-    /**
-     * @param string $code
-     * @return FormatoTicket
-     */
-    protected function getFormatFromCode(string $code = ''): FormatoTicket
+    protected function printFromMobile()
     {
-        $formato = new FormatoTicket();
-        $formato->loadFromCode($code);
+        $ticketBuilder = $this->getSalesTicketBuilder();
 
-        return $formato;
+        if (null === $ticketBuilder) {
+            return;
+        }
+
+        $buffer = $ticketBuilder->getResult();
+
+        echo "intent:base64," . base64_encode($buffer) . "#Intent;scheme=rawbt;package=ru.a402d.rawbtprinter;end;";
     }
 
-    /**
-     * @return FormatoTicket[]
-     */
-    protected function getFormatFromDocument(): array
+    protected function printFromDesktop()
     {
-        $tipoDocumento = $this->request->request->get('tipo-documento');
-        $formato = new FormatoTicket();
+        $ticketBuilder = $this->getSalesTicketBuilder();
 
-        return $formato->allFromDocument($tipoDocumento);
+        if (null === $ticketBuilder) {
+            return;
+        }
+
+        $response = [
+            'print_job_id' => PrintingService::newPrintJob($ticketBuilder)
+        ];
+
+        echo json_encode($response);
     }
 
-    /**
-     * @return void
-     */
-    protected function newPrintJob(): void
-    {
-        $documentCode = $this->request->request->get('codigo');
-        $formatCode = $this->request->request->get('formato');
-        $modelName = $this->request->request->get('tipo');
-
-        /** @var BusinessDocument $className */
-        $className = self::MODEL_NAMESPACE . $modelName;
-        $document = (new $className)->get($documentCode);
-
-        if (false === $document) return;
-
-        $ticketFormat = $this->getFormatFromCode($formatCode);
-        $ticketBuilder = new SalesTicket($document, $ticketFormat);
-
-        $salesTicket = new PrintingService($ticketBuilder);
-        $salesTicket->savePrintJob();
-
-        echo $salesTicket->getResponse();
-    }
-
-    protected function sendPrintJob($modelName, $code, bool $gift): void
+   /* protected function sendPrintJob($modelName, $code): void
     {
         $className = self::MODEL_NAMESPACE . $modelName;
         $document = (new $className)->get($code);
@@ -154,9 +130,9 @@ class PrintTicket extends Controller
         $salesTicket->savePrintJob();
 
         echo $salesTicket->getResponse();
-    }
+    }*/
 
-    protected function sendServicePrintJob($code)
+    /*protected function sendServicePrintJob($code)
     {
         $servicio = (new ServicioAT())->get($code);
 
@@ -169,5 +145,38 @@ class PrintTicket extends Controller
         $serviceTicket->savePrintJob();
 
         echo $serviceTicket->getResponse();
+    }*/
+
+    protected function getSalesTicketBuilder(): ?SalesTicket
+    {
+        $documentCode = $this->request->request->get('codigo');
+        $formatCode = $this->request->request->get('formato');
+        $modelName = $this->request->request->get('tipo');
+
+        $className = self::MODEL_NAMESPACE . $modelName;
+        $document = (new $className)->get($documentCode);
+
+        if (!($document instanceof SalesDocument)) {
+            return null;
+        }
+
+        $ticketFormat = $this->getFormatFromCode($formatCode);
+        return new SalesTicket($document, $ticketFormat);
+    }
+
+    protected function getFormatFromCode(string $code = ''): FormatoTicket
+    {
+        $formato = new FormatoTicket();
+        $formato->loadFromCode($code);
+
+        return $formato;
+    }
+
+    protected function getTicketFormats(): void
+    {
+        $tipoDocumento = $this->request->request->get('tipo-documento');
+        $formato = new FormatoTicket();
+
+        $this->response->setContent(json_encode($formato->allFromDocument($tipoDocumento)));
     }
 }

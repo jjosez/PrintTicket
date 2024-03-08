@@ -19,88 +19,30 @@
 
 namespace FacturaScripts\Plugins\PrintTicket\Lib;
 
-use FacturaScripts\Core\Base\Translator;
+use FacturaScripts\Core\Tools;
 use FacturaScripts\Dinamic\Model\Ticket;
 use FacturaScripts\Plugins\PrintTicket\Lib\Ticket\Builder\AbstractTicketBuilder;
 
 class PrintingService
 {
-    const PRINTER_PORT = 8089;
+    public const PRINTER_PORT = 8089;
 
-    /**
-     * @var AbstractTicketBuilder
-     */
-    protected $builder;
-
-    /**
-     * @var string
-     */
-    protected $message;
-
-    /**
-     * @var string
-     */
-    protected $jsonResponse;
-
-    public function __construct(AbstractTicketBuilder $ticketBuilder)
-    {
-        $this->builder = $ticketBuilder;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getMessage(): string
-    {
-        return $this->message;
-    }
-
-    public function getResponse(): string
-    {
-        return $this->jsonResponse;
-    }
-
-
-    public function savePrintJob(): void
+    public static function saveTicket(string $ticketType, string $ticketBody): string
     {
         $ticket = new Ticket();
 
-        $ticket->coddocument = $this->builder->getTicketType() . bin2hex(random_bytes(5));
-        $ticket->text = $this->builder->getResult();
+        $ticket->setPrintCode($ticketType);
+        $ticket->text = $ticketBody;
 
-        if (false === $ticket->save()) {
-            $this->setErrorMessage();
-        } else {
-            $this->setMessage($ticket->coddocument);
+        if ($ticket->save()) {
+            return $ticket->coddocument;
         }
 
-        $this->setResponse($ticket->coddocument);
+        return '';
     }
 
-    private function setResponse(string $code): void
+    public static function newPrintJob(AbstractTicketBuilder $builder): string
     {
-        $printMessage = (new Translator())->trans('printing');
-        $documentType = (new Translator())->trans($this->builder->getTicketType());
-
-        $response = [
-            "message" => $printMessage,
-            "document" => $documentType,
-            "code" => $code
-        ];
-
-        $this->jsonResponse = json_encode($response);
-    }
-
-    private function setMessage(string $code): void
-    {
-        $this->message = (new Translator())->trans(
-            'printing-ticket-comand',
-            ['%code%' => $code, '%port%' => self::PRINTER_PORT]
-        );
-    }
-
-    private function setErrorMessage()
-    {
-        $this->message = (new Translator())->trans('error-printing-ticket');
+        return self::saveTicket($builder->getTicketType(), $builder->getResult());
     }
 }
