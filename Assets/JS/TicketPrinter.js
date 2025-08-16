@@ -28,7 +28,7 @@ export function showPrinterDialog(documentName) {
                 message: '<h4>¿Qué típo de impresión deseas?</h4>', size: 'medium', buttons: data
             });
         })
-        .catch(error => showPrintMessage('Error al obtener los formatos de impresion: ' + error));
+        .catch(error => showPrintMessage('Error al obtener los formatos de impresion'));
 }
 
 async function printRequest({documentCode, documentFormat, documentName}) {
@@ -38,30 +38,7 @@ async function printRequest({documentCode, documentFormat, documentName}) {
     data.append('formato', documentFormat);
     data.append('tipo', documentName);
 
-    if (isAndroidUserAgent()) {
-        await printOnAndroid(data);
-        return;
-    }
-
     await printOnDesktop(data);
-}
-
-async function printOnAndroid(data) {
-    /*var S = "#Intent;scheme=rawbt;";
-    var P = "package=ru.a402d.rawbtprinter;end;";
-
-    var textEncoded = encodeURI(result);*/
-    data.set('action', 'print-mobile-ticket');
-
-    let response = corePrintRequest(data)
-        .then(response => response)
-        .catch(error => showPrintMessage('No se pudo conectar al servicio de impresion: ' + error));
-
-    try {
-        window.location.href = await response.text();
-    } catch (error) {
-        alert(error);
-    }
 }
 
 async function printOnDesktop(data) {
@@ -76,15 +53,9 @@ async function printOnDesktop(data) {
 async function printerServiceRequest({print_job_id}) {
     let params = new URLSearchParams({"documento": print_job_id});
 
-    await fetch('http://localhost:8089?' + params, {
+    await fetch('http://127.0.0.1:8089?' + params, {
         mode: 'no-cors', method: 'GET'
     });
-}
-
-function isAndroidUserAgent() {
-    let userAgent = navigator.userAgent.toLowerCase();
-
-    return userAgent.indexOf("android") > -1; //&& ua.indexOf("mobile");
 }
 
 function showPrintMessage(message) {

@@ -97,7 +97,7 @@ class FormatoTicket extends Base\ModelClass
         return 'formatos_tickets';
     }
 
-    public function test()
+    public function test(): bool
     {
         $this->cuerpo_fontsize = $this->cuerpo_fontsize ?? self::DEFAULT_BODY_FONTSIZE;
         $this->titulo_fontsize = $this->titulo_fontsize ?? self::DEFAULT_TITLE_FONTSIZE;

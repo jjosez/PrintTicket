@@ -10,6 +10,7 @@ class Ticket extends Base\ModelClass
     public $abrircajon;
     public $coddocument;
     public $cortarpapel;
+
     public $name;
 
     public $text;
@@ -21,7 +22,7 @@ class Ticket extends Base\ModelClass
         $this->cortarpapel = true;
     }
 
-    public function install()
+    public function install(): string
     {
         new TicketCustomLine();
         return parent::install();

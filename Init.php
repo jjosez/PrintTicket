@@ -4,7 +4,7 @@ namespace FacturaScripts\Plugins\PrintTicket;
 
 use FacturaScripts\Core\Base\AjaxForms\SalesHeaderHTML;
 use FacturaScripts\Core\Base\DataBase\DataBaseWhere;
-use FacturaScripts\Core\Base\InitClass;
+use FacturaScripts\Core\Template\InitClass;
 use FacturaScripts\Dinamic\Model\ApiAccess;
 use FacturaScripts\Dinamic\Model\ApiKey;
 
@@ -13,7 +13,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 class Init extends InitClass
 {
 
-    public function init()
+    public function init(): void
     {
         $this->loadExtension(new Extension\Controller\EditAlbaranCliente());
         $this->loadExtension(new Extension\Controller\EditFacturaCliente());
@@ -24,7 +24,7 @@ class Init extends InitClass
         //SalesHeaderHTML::addMod(new Mod\SalesHeaderHTMLMod());
     }
 
-    public function update()
+    public function update(): void
     {
         $this->generateApiKey();
 
@@ -60,5 +60,10 @@ class Init extends InitClass
             $apiAcces->allowdelete = true;
             $apiAcces->save();
         }
+    }
+
+    public function uninstall(): void
+    {
+        // TODO: Implement uninstall() method.
     }
 }

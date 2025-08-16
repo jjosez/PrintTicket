@@ -49,9 +49,10 @@ class PrintTicket extends Controller
 
     public function privateCore(&$response, $user, $permissions)
     {
+        $permissions->allowAccess = true;
         parent::privateCore($response, $user, $permissions);
-        $this->setTemplate(false);
 
+        $this->setTemplate(false);
         $action = $this->request->request->get('action', '');
         if (true === $this->execAction($action)) {
             return;
@@ -61,10 +62,8 @@ class PrintTicket extends Controller
         $modelName = $this->request->request->get('tipo');
 
         if (true === empty($modelName) || true === empty($code)) {
-            echo 'Not valid tikcet data';
+            echo 'Not valid ticket data';
         }
-
-        //$this->sendPrintJob($modelName, $code, false);
     }
 
     /**

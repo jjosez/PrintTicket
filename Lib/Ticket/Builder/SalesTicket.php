@@ -19,6 +19,7 @@
 
 namespace FacturaScripts\Plugins\PrintTicket\Lib\Ticket\Builder;
 
+use FacturaScripts\Core\Base\Calculator;
 use FacturaScripts\Core\Base\NumberTools;
 use FacturaScripts\Core\Model\Base\SalesDocument;
 use FacturaScripts\Dinamic\Model\FormatoTicket;
@@ -101,6 +102,23 @@ class SalesTicket extends AbstractTicketBuilder
         if (self::PRICE_AFTER_TAX === $this->formato->formato_precio) {
             $this->printer->textKeyValue('IVA Incluido:', NumberTools::format($this->document->totaliva));
         } else {
+            $subtotals = Calculator::getSubtotals($this->document, $this->document->getLines());
+
+            $text = $this->printer->textToColumn(4, 'Base', '-');
+            $text .= $this->printer->textToColumn(4, 'IVA %', '-');
+            $text .= $this->printer->textToColumn(4, 'IVA', '-');
+            $text .= $this->printer->textToColumn(4, 'Total', '-');
+            $this->printer->text($text);
+
+            foreach ($subtotals['iva'] as $subtotal) {
+                $taxTextLine = $this->printer->textToColumn(4, NumberTools::format(round($subtotal['neto'], FS_NF0)), '-');
+                $taxTextLine .= $this->printer->textToColumn(4, NumberTools::format(round($subtotal['iva'], FS_NF0)), '-');
+                $taxTextLine .= $this->printer->textToColumn(4, NumberTools::format(round($subtotal['totaliva'], FS_NF0)), '-');
+                $taxTextLine .= $this->printer->textToColumn(4, NumberTools::format(round($subtotal['neto'] + $subtotal['totaliva'], FS_NF0)), '-');
+                $this->printer->text($taxTextLine);
+            }
+
+            $this->printer->lineSeparator();
             $this->printer->textKeyValue('Base:', NumberTools::format($this->document->neto));
             $this->printer->textKeyValue('IVA:', NumberTools::format($this->document->totaliva));
         }

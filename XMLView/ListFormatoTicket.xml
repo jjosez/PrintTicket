@@ -54,9 +54,9 @@
             </column>
             <column name="price-format" numcolumns="3" order="110">
                 <widget type="select" fieldname="formato_precio" translate="true">
+                    <values title="no-prices">0</values>
                     <values title="after-tax">1</values>
                     <values title="before-tax">2</values>
-                    <values title="no-prices">3</values>
                 </widget>
             </column>
             <column name="logo" titleurl="ListAttachedFile" description="JPEG, PNG" numcolumns="3" display="none" order="120">

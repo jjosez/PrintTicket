@@ -19,7 +19,6 @@
 
 namespace FacturaScripts\Plugins\PrintTicket\Lib;
 
-use FacturaScripts\Core\Tools;
 use FacturaScripts\Dinamic\Model\Ticket;
 use FacturaScripts\Plugins\PrintTicket\Lib\Ticket\Builder\AbstractTicketBuilder;
 

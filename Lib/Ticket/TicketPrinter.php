@@ -3,6 +3,7 @@
 namespace FacturaScripts\Plugins\PrintTicket\Lib\Ticket;
 
 use FacturaScripts\Core\Base\ToolBox;
+use FacturaScripts\Core\Tools;
 use Mike42\Escpos\EscposImage;
 use Mike42\Escpos\PrintConnectors\DummyPrintConnector;
 use Mike42\Escpos\PrintConnectors\PrintConnector;
